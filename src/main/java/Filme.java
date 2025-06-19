@@ -1,3 +1,5 @@
+import javax.swing.*;
+
 public class Filme {
     private String titulo;
     private int duracao;
