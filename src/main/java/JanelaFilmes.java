@@ -13,19 +13,25 @@ public class JanelaFilmes extends JFrame {
     private JButton removerButton;
     private JButton backButton;
 
+    public String nomeUser;
+
     private List<Filme> filmes = new ArrayList<>();
 
-    public JanelaFilmes() {
+    public JanelaFilmes(String nomeUser) {
+        this.nomeUser = nomeUser;
         setTitle("Gestão de Filmes");
         setContentPane(contentPane);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null);
 
-        // Evento do botão "Adicionar"
-        adicionarButton.addActionListener(e -> adicionarFilmeTeste());
+        adicionarButton.addActionListener(e -> new JanelaAdicionarFilme(this));
 
-        // Evento do botão "Remover" (por agora apenas exemplo)
+        backButton.addActionListener(e -> {
+            new JanelaPrincipal(nomeUser);
+            dispose();
+        });
+
         removerButton.addActionListener(e -> {
             if (!filmes.isEmpty()) {
                 filmes.remove(filmes.size() - 1); // remove o último
@@ -65,12 +71,10 @@ public class JanelaFilmes extends JFrame {
         card.setPreferredSize(new Dimension(120, 200));
         card.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
-        // Imagem
         ImageIcon icon = new ImageIcon(filme.getImagem());
         Image scaled = icon.getImage().getScaledInstance(120, 160, Image.SCALE_SMOOTH);
         JLabel lblImagem = new JLabel(new ImageIcon(scaled));
 
-        // Título
         JLabel lblTitulo = new JLabel("<html><center>" + filme.getTitulo() + "</center></html>", SwingConstants.CENTER);
 
         card.add(lblImagem, BorderLayout.CENTER);
@@ -79,7 +83,4 @@ public class JanelaFilmes extends JFrame {
         return card;
     }
 
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
-    }
 }

@@ -15,6 +15,7 @@ public class JanelaPrincipal  extends JFrame{
     private JButton btnConsultas;
     private JPanel contentPane;
 
+
     public JanelaPrincipal(String nomeUser) {
         setTitle("Menu Principal");
         setContentPane(contentPane);
@@ -34,9 +35,10 @@ public class JanelaPrincipal  extends JFrame{
         lblUser.setText(nomeUser);
 
         btnFilmes.addActionListener(e -> {
-            new JanelaFilmes();
+            new JanelaFilmes(nomeUser);
             dispose();
         });
+
 
         // Os outros botões ainda não fazem nada
         btnVendaBilhetes.addActionListener(e -> JOptionPane.showMessageDialog(this, "Ainda por implementar"));
