@@ -13,58 +13,41 @@ public class JanelaFilmes extends JFrame {
     private JButton removerButton;
     private JButton backButton;
 
-<<<<<<< HEAD
-    private List<Filme> filmes = new ArrayList<>();
-
-    public JanelaFilmes() {
-=======
-    public String nomeUser;
-
+    private String nomeUser;
     private List<Filme> filmes = new ArrayList<>();
 
     public JanelaFilmes(String nomeUser) {
         this.nomeUser = nomeUser;
->>>>>>> 96a40879271e7bca96769075a108d43f4a2b8bb2
+
         setTitle("Gestão de Filmes");
         setContentPane(contentPane);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null);
 
-<<<<<<< HEAD
-        // Evento do botão "Adicionar"
-        adicionarButton.addActionListener(e -> adicionarFilmeTeste());
-
-        // Evento do botão "Remover" (por agora apenas exemplo)
-=======
+        // Botão "Adicionar"
         adicionarButton.addActionListener(e -> new JanelaAdicionarFilme(this));
 
+        // Botão "Remover" - remove o último da lista
+        removerButton.addActionListener(e -> {
+            if (!filmes.isEmpty()) {
+                filmes.remove(filmes.size() - 1);
+                atualizarLista();
+            }
+        });
+
+        // Botão "Voltar"
         backButton.addActionListener(e -> {
             new JanelaPrincipal(nomeUser);
             dispose();
-        });
-
->>>>>>> 96a40879271e7bca96769075a108d43f4a2b8bb2
-        removerButton.addActionListener(e -> {
-            if (!filmes.isEmpty()) {
-                filmes.remove(filmes.size() - 1); // remove o último
-                atualizarLista();
-            }
         });
 
         atualizarLista();
         setVisible(true);
     }
 
-    private void adicionarFilmeTeste() {
-        Filme novo = new Filme(
-                "Minecraft",
-                90,
-                "Um filme sobre blocos",
-                "Aventura",
-                "src/main/resources/minecraft.jpg" // adapta o caminho à tua imagem
-        );
-        filmes.add(novo);
+    public void adicionarFilme(Filme filme) {
+        filmes.add(filme);
         atualizarLista();
     }
 
@@ -84,18 +67,12 @@ public class JanelaFilmes extends JFrame {
         card.setPreferredSize(new Dimension(120, 200));
         card.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
-<<<<<<< HEAD
         // Imagem
-=======
->>>>>>> 96a40879271e7bca96769075a108d43f4a2b8bb2
         ImageIcon icon = new ImageIcon(filme.getImagem());
         Image scaled = icon.getImage().getScaledInstance(120, 160, Image.SCALE_SMOOTH);
         JLabel lblImagem = new JLabel(new ImageIcon(scaled));
 
-<<<<<<< HEAD
         // Título
-=======
->>>>>>> 96a40879271e7bca96769075a108d43f4a2b8bb2
         JLabel lblTitulo = new JLabel("<html><center>" + filme.getTitulo() + "</center></html>", SwingConstants.CENTER);
 
         card.add(lblImagem, BorderLayout.CENTER);
@@ -104,10 +81,8 @@ public class JanelaFilmes extends JFrame {
         return card;
     }
 
-<<<<<<< HEAD
     private void createUIComponents() {
-        // TODO: place custom component creation code here
+        // Custom UI components se necessário
     }
-=======
->>>>>>> 96a40879271e7bca96769075a108d43f4a2b8bb2
 }
+
