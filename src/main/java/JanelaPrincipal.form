@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="JanelaPrincipal">
+  <grid id="27dc6" binding="contentPane" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="1520" height="2135"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <grid id="f87cc" binding="painelTopo" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints border-constraint="North"/>
+        <properties>
+          <background color="-1840417"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="efdfd" class="javax.swing.JLabel" binding="lblUser">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="4" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="User"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="30b64" layout-manager="GridLayoutManager" row-count="4" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="5810c" class="javax.swing.JButton" binding="btnVendaBilhetes">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-3480131"/>
+              <horizontalAlignment value="0"/>
+              <horizontalTextPosition value="2"/>
+              <icon value="gestaoVendaBilhetes.png"/>
+              <iconTextGap value="10"/>
+              <text value="Gestão de Venda de Bilhetes"/>
+            </properties>
+          </component>
+          <component id="426ff" class="javax.swing.JButton" binding="btnSalas">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-3480131"/>
+              <horizontalTextPosition value="2"/>
+              <icon value="gestaoSalas.png"/>
+              <iconTextGap value="10"/>
+              <text value="Gestão de Salas"/>
+            </properties>
+          </component>
+          <component id="12003" class="javax.swing.JButton" binding="btnFilmes">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-3480131"/>
+              <horizontalTextPosition value="2"/>
+              <icon value="gestaoFilmes.png"/>
+              <iconTextGap value="10"/>
+              <inheritsPopupMenu value="false"/>
+              <text value="Gestão de Filmes"/>
+            </properties>
+          </component>
+          <component id="717f0" class="javax.swing.JButton" binding="btnSessoes">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-3480131"/>
+              <horizontalTextPosition value="2"/>
+              <icon value="gestaoSessoes.png"/>
+              <iconTextGap value="10"/>
+              <text value="Gestão de Sessões"/>
+            </properties>
+          </component>
+          <component id="96cef" class="javax.swing.JButton" binding="btnBar">
+            <constraints>
+              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-3480131"/>
+              <horizontalTextPosition value="2"/>
+              <icon value="gestaoBar.png"/>
+              <iconTextGap value="10"/>
+              <text value="Gestão do Espaço Bar"/>
+            </properties>
+          </component>
+          <component id="b77d2" class="javax.swing.JButton" binding="btnCampanhas">
+            <constraints>
+              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-3480131"/>
+              <horizontalTextPosition value="2"/>
+              <icon value="gestaoCampanhas.png"/>
+              <iconTextGap value="10"/>
+              <text value="Gestão de Campanhas"/>
+            </properties>
+          </component>
+          <component id="6eb0f" class="javax.swing.JButton" binding="btnFuncionarios">
+            <constraints>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-3480131"/>
+              <horizontalTextPosition value="2"/>
+              <icon value="gestaoFuncionarios.png"/>
+              <iconTextGap value="10"/>
+              <text value="Gestão de Funcionários"/>
+            </properties>
+          </component>
+          <component id="87fc4" class="javax.swing.JButton" binding="btnConsultas">
+            <constraints>
+              <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-3480131"/>
+              <horizontalTextPosition value="2"/>
+              <icon value="moduloConsultas.png"/>
+              <iconTextGap value="10"/>
+              <text value="Módulo de Consultas"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>
