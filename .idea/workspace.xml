@@ -5,8 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0a5a794f-2fdc-44b9-a415-5466020637df" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/test/java/FuncionarioTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/JanelaSalas.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JanelaSalas.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/funcionarios_tmp.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/JanelaPrincipal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JanelaPrincipal.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,6 +40,11 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.Main.executor": "Run",
+    "JUnit.FuncionarioTest.testAlterarDados.executor": "Run",
+    "JUnit.FuncionarioTest.testContactoValido.executor": "Run",
+    "JUnit.FuncionarioTest.testCriarFuncionario.executor": "Run",
+    "JUnit.FuncionarioTest.testLucroZero.executor": "Run",
+    "JUnit.FuncionarioTest.testToString.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "UI_DESIGNER_EDITOR_MODE.PaletteManager.SHOW": "true",
@@ -62,7 +70,7 @@
       <recent name="C:\Users\matil\OneDrive\Ambiente de Trabalho\ESoft\Projeto_ESOFT\src\main\java\JanelaPrincipal.java" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="Projeto_ESOFT" />
@@ -70,9 +78,53 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="FuncionarioTest.testAlterarDados" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Projeto_ESOFT" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="FuncionarioTest" />
+      <option name="METHOD_NAME" value="testAlterarDados" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FuncionarioTest.testContactoValido" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Projeto_ESOFT" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="FuncionarioTest" />
+      <option name="METHOD_NAME" value="testContactoValido" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FuncionarioTest.testLucroZero" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Projeto_ESOFT" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="FuncionarioTest" />
+      <option name="METHOD_NAME" value="testLucroZero" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FuncionarioTest.testToString" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Projeto_ESOFT" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="FuncionarioTest" />
+      <option name="METHOD_NAME" value="testToString" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.Main" />
+        <item itemvalue="JUnit.FuncionarioTest.testContactoValido" />
+        <item itemvalue="JUnit.FuncionarioTest.testAlterarDados" />
+        <item itemvalue="JUnit.FuncionarioTest.testToString" />
+        <item itemvalue="JUnit.FuncionarioTest.testLucroZero" />
       </list>
     </recent_temporary>
   </component>
