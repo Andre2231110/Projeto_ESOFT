@@ -2,7 +2,10 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class JanelaSalas extends JFrame {
 
@@ -17,6 +20,10 @@ public class JanelaSalas extends JFrame {
     private JButton btnEditar;
     private JButton btnRemover;
     private JButton btnSair;
+
+
+    private final String FICHEIRO_SALAS = "src/main/java/csv/salas.csv";
+
 
     private DefaultTableModel modeloTabela;
     private ArrayList<Sala> listaSalas;
@@ -49,6 +56,8 @@ public class JanelaSalas extends JFrame {
 
         setContentPane(painelPrincipal);
         setVisible(true);
+        carregarSalasDeCSV();
+        atualizarTabela();
     }
 
     private void criarFormulario() {
@@ -91,14 +100,16 @@ public class JanelaSalas extends JFrame {
         btnRemover = new JButton("Remover");
         btnSair = new JButton("Sair");
 
+
+
         painelBotoes.add(btnAdicionar);
         painelBotoes.add(btnEditar);
         painelBotoes.add(btnRemover);
         painelBotoes.add(btnSair);
 
+
         painelPrincipal.add(painelBotoes, BorderLayout.SOUTH);
 
-        // Listeners
         btnAdicionar.addActionListener(e -> adicionarSala());
         btnEditar.addActionListener(e -> editarSala());
         btnRemover.addActionListener(e -> removerSala());
@@ -127,6 +138,8 @@ public class JanelaSalas extends JFrame {
                 "Sala adicionada com sucesso!",
                 "Sucesso",
                 JOptionPane.INFORMATION_MESSAGE);
+
+        guardarSalasEmCSV();
     }
 
 
@@ -164,6 +177,8 @@ public class JanelaSalas extends JFrame {
                 "Sala editada com sucesso!",
                 "Sucesso",
                 JOptionPane.INFORMATION_MESSAGE);
+
+        guardarSalasEmCSV();
     }
 
 
@@ -192,6 +207,8 @@ public class JanelaSalas extends JFrame {
                 "Sala removida com sucesso!",
                 "Sucesso",
                 JOptionPane.INFORMATION_MESSAGE);
+
+        guardarSalasEmCSV();
     }
 
     private void limparFormulario() {
@@ -201,6 +218,81 @@ public class JanelaSalas extends JFrame {
         cmbSom.setSelectedIndex(0);
         chkAcessivel.setSelected(false);
     }
+
+
+
+    private void carregarSalasDeCSV() {
+        File ficheiro = new File(FICHEIRO_SALAS);
+        if (!ficheiro.exists()) {
+            // Se o ficheiro ainda não existir, nada é carregado (primeira execução, por exemplo)
+            return;
+        }
+
+        try (Scanner scanner = new Scanner(ficheiro)) {
+            listaSalas.clear(); // limpar antes
+            // ignorar cabeçalho
+
+            while (scanner.hasNextLine()) {
+                String linha = scanner.nextLine();
+                String[] partes = linha.split(",");
+
+                if (partes.length == 5) {
+                    String nome = partes[0];
+                    String tipo = partes[1];
+                    String layout = partes[2].split("x")[0]; // ex: "10x10" → "10"
+                    String som = partes[3];
+                    boolean acessivel = partes[4].equalsIgnoreCase("Sim");
+
+                    Sala sala = new Sala(nome, tipo, layout, som, acessivel);
+                    listaSalas.add(sala);
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Erro ao carregar CSV: " + e.getMessage(),
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void guardarSalasEmCSV() {
+        try {
+            File ficheiro = new File(FICHEIRO_SALAS);
+
+            try (PrintWriter writer = new PrintWriter(ficheiro)) {
+
+
+                for (Sala sala : listaSalas) {
+                    writer.printf("%s,%s,%sx%s,%s,%s%n",
+                            sala.getNome(),
+                            sala.getTipo(),
+                            sala.getLayout(), sala.getLayout(),
+                            sala.getSom(),
+                            sala.isAcessivel() ? "1" : "0");
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Erro ao guardar CSV: " + e.getMessage(),
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void atualizarTabela() {
+        modeloTabela.setRowCount(0); // limpa a tabela
+        for (Sala sala : listaSalas) {
+            modeloTabela.addRow(new Object[]{
+                    sala.getNome(),
+                    sala.getTipo(),
+                    sala.getLayout() + "x" + sala.getLayout(),
+                    sala.getSom(),
+                    sala.isAcessivel() ? "Sim" : "Não"
+            });
+        }
+    }
+
+
 
     private boolean dadosValidos() {
         String nome = txtNome.getText().trim();
