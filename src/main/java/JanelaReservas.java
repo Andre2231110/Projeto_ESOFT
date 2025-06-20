@@ -2,8 +2,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.time.LocalDate;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Scanner;
 import java.io.*;
@@ -17,6 +18,7 @@ public class JanelaReservas extends JDialog {
     private JTextField txtTelefone;
     private JTextField txtQuantidade;
     private JTextField txtPreco;
+    private JTextField txtData;
 
     private JTable tabelaReservas;
     private DefaultTableModel modeloTabela;
@@ -32,7 +34,7 @@ public class JanelaReservas extends JDialog {
         this.listaReservas = new ArrayList<>();
         this.FICHEIRO_RESERVAS = "src/main/java/csv/reservas.csv";
 
-        setSize(800, 450);
+        setSize(900, 500);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout());
 
@@ -47,7 +49,7 @@ public class JanelaReservas extends JDialog {
     }
 
     private void criarFormulario() {
-        JPanel painelFormulario = new JPanel(new GridLayout(5, 2));
+        JPanel painelFormulario = new JPanel(new GridLayout(6, 2));
         painelFormulario.setBorder(BorderFactory.createTitledBorder("Nova Reserva de Grupo"));
 
         painelFormulario.add(new JLabel("Responsável do Grupo:"));
@@ -66,6 +68,10 @@ public class JanelaReservas extends JDialog {
         txtPreco = new JTextField();
         painelFormulario.add(txtPreco);
 
+        painelFormulario.add(new JLabel("Data (AAAA-MM-DD):"));
+        txtData = new JTextField();
+        painelFormulario.add(txtData);
+
         btnAdicionar = new JButton("Adicionar");
         painelFormulario.add(btnAdicionar);
 
@@ -75,7 +81,7 @@ public class JanelaReservas extends JDialog {
     }
 
     private void criarTabela() {
-        modeloTabela = new DefaultTableModel(new String[]{"Responsável", "Telefone", "Quantidade", "Preço (€)"}, 0);
+        modeloTabela = new DefaultTableModel(new String[]{"Responsável", "Telefone", "Quantidade", "Preço (€)", "Data"}, 0);
         tabelaReservas = new JTable(modeloTabela);
         add(new JScrollPane(tabelaReservas), BorderLayout.CENTER);
     }
@@ -94,33 +100,30 @@ public class JanelaReservas extends JDialog {
         String telefone = txtTelefone.getText().trim();
         String quantidadeTexto = txtQuantidade.getText().trim();
         String precoTexto = txtPreco.getText().trim();
+        String dataTexto = txtData.getText().trim();
 
-        if (responsavel.isEmpty() || telefone.isEmpty() || quantidadeTexto.isEmpty() || precoTexto.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "Todos os campos são obrigatórios.",
-                    "Erro",
-                    JOptionPane.ERROR_MESSAGE);
+        if (!dadosReservaValidos(responsavel, telefone, quantidadeTexto, precoTexto, dataTexto)) {
             return;
         }
 
-        int quantidade;
-        double preco;
         try {
-            quantidade = Integer.parseInt(quantidadeTexto);
-            preco = Double.parseDouble(precoTexto);
-        } catch (NumberFormatException e) {
+            int quantidade = Integer.parseInt(quantidadeTexto);
+            double preco = Double.parseDouble(precoTexto.replace(",", "."));
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date data = sdf.parse(dataTexto);
+
+            Reserva nova = new Reserva(responsavel, telefone, quantidade, preco, data);
+            listaReservas.add(nova);
+            guardarReservasEmCSV();
+            atualizarTabela();
+            limparCampos();
+
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
-                    "Quantidade deve ser número inteiro e preço deve ser número decimal.",
+                    "Erro no formato dos dados. Verifica os campos.",
                     "Erro",
                     JOptionPane.ERROR_MESSAGE);
-            return;
         }
-
-        Reserva nova = new Reserva(responsavel, telefone, quantidade, preco);
-        listaReservas.add(nova);
-        guardarReservasEmCSV();
-        atualizarTabela();
-        limparCampos();
     }
 
     private void removerReserva() {
@@ -150,13 +153,16 @@ public class JanelaReservas extends JDialog {
         txtTelefone.setText("");
         txtQuantidade.setText("");
         txtPreco.setText("");
+        txtData.setText("");
     }
 
     private void atualizarTabela() {
         modeloTabela.setRowCount(0);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         for (Reserva r : listaReservas) {
             modeloTabela.addRow(new Object[]{
-                    r.getResponsavel(), r.getTelefone(), r.getQuantidadePessoas(), String.format("%.2f", r.getPrecoPago())
+                    r.getResponsavel(), r.getTelefone(), r.getQuantidadePessoas(),
+                    String.format("%.2f", r.getPrecoPago()), sdf.format(r.getData())
             });
         }
     }
@@ -167,6 +173,7 @@ public class JanelaReservas extends JDialog {
 
         try (Scanner scanner = new Scanner(ficheiro)) {
             listaReservas.clear();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             while (scanner.hasNextLine()) {
                 String linha = scanner.nextLine();
                 String[] partes = linha.split(",");
@@ -174,12 +181,10 @@ public class JanelaReservas extends JDialog {
                     String responsavel = partes[0];
                     String telefone = partes[1];
                     int quantidade = Integer.parseInt(partes[2]);
-                    double preco = Double.parseDouble(partes[3].replace(",", ".")); // <- aqui a alteração
-                    String nomeSala = partes[4];
-                    if (nomeSala.equalsIgnoreCase(sala.getNome())) {
-                        Reserva r = new Reserva(responsavel, telefone, quantidade, preco);
-                        listaReservas.add(r);
-                    }
+                    double preco = Double.parseDouble(partes[3].replace(",", "."));
+                    Date data = sdf.parse(partes[4]);
+                    Reserva r = new Reserva(responsavel, telefone, quantidade, preco, data);
+                    listaReservas.add(r);
                 }
             }
         } catch (Exception e) {
@@ -195,26 +200,15 @@ public class JanelaReservas extends JDialog {
             File ficheiro = new File(FICHEIRO_RESERVAS);
             ficheiro.getParentFile().mkdirs();
 
-            ArrayList<String> linhasExistentes = new ArrayList<>();
-            if (ficheiro.exists()) {
-                try (Scanner scanner = new Scanner(ficheiro)) {
-                    while (scanner.hasNextLine()) {
-                        String linha = scanner.nextLine();
-                        if (!linha.trim().endsWith("," + sala.getNome())) {
-                            linhasExistentes.add(linha);
-                        }
-                    }
-                }
-            }
-
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             try (PrintWriter writer = new PrintWriter(ficheiro)) {
-                for (String linha : linhasExistentes) {
-                    writer.println(linha);
-                }
                 for (Reserva r : listaReservas) {
-                    writer.printf("%s,%s,%d,%s,%s%n",
-                            r.getResponsavel(), r.getTelefone(), r.getQuantidadePessoas(),
-                            String.format(Locale.US, "%.2f", r.getPrecoPago()), sala.getNome());
+                    writer.printf(Locale.US, "%s,%s,%d,%.2f,%s%n",
+                            r.getResponsavel(),
+                            r.getTelefone(),
+                            r.getQuantidadePessoas(),
+                            r.getPrecoPago(),
+                            sdf.format(r.getData()));
                 }
             }
         } catch (Exception e) {
@@ -223,5 +217,17 @@ public class JanelaReservas extends JDialog {
                     "Erro",
                     JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private boolean dadosReservaValidos(String responsavel, String telefone, String quantidadeTexto, String precoTexto, String dataTexto) {
+        if (responsavel.isEmpty() || telefone.isEmpty() || quantidadeTexto.isEmpty()
+                || precoTexto.isEmpty() || dataTexto.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Todos os campos são obrigatórios.",
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
     }
 }
