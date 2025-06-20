@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
+import java.io.*;
 
 public class JanelaCampanhas extends JFrame {
     private JPanel contentPane;
@@ -15,6 +17,9 @@ public class JanelaCampanhas extends JFrame {
 
     private ArrayList<Campanhas> listaCampanhas = new ArrayList<>();
     private String nomeUser;
+
+    private static final String FICHEIRO_CSV = "src/main/java/csv/campanhas.csv";
+
 
     public JanelaCampanhas(String nomeUser) {
         this.nomeUser = nomeUser;
@@ -37,7 +42,18 @@ public class JanelaCampanhas extends JFrame {
             new JanelaEditarCampanha(this, null);
         });
 
+
         setVisible(true);
+        carregarCampanhasCSV();
+        atualizarLista();
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                guardarCampanhasCSV();
+            }
+        });
+
     }
 
     public void atualizarLista() {
@@ -45,7 +61,7 @@ public class JanelaCampanhas extends JFrame {
 
         for (Campanhas c : listaCampanhas) {
             painelCampanhas.add(criarCardCampanha(c));
-            painelCampanhas.add(Box.createRigidArea(new Dimension(0, 10))); 
+            painelCampanhas.add(Box.createRigidArea(new Dimension(0, 10)));
         }
 
 
@@ -79,6 +95,7 @@ public class JanelaCampanhas extends JFrame {
             JOptionPane.showMessageDialog(this,
                     campanha.isAtiva() ? "Campanha ativada com sucesso!" : "Campanha desativada com sucesso!");
             atualizarLista();
+            guardarCampanhasCSV();
         });
 
         JButton btnEditar = new JButton("Editar");
@@ -98,6 +115,7 @@ public class JanelaCampanhas extends JFrame {
                 listaCampanhas.remove(campanha);
                 atualizarLista();
                 JOptionPane.showMessageDialog(this, "Campanha eliminada com sucesso.");
+                guardarCampanhasCSV();
             }
         });
 
@@ -118,7 +136,66 @@ public class JanelaCampanhas extends JFrame {
     }
 
     public void adicionarOuAtualizarCampanha(Campanhas campanha, boolean nova) {
-        if (nova) listaCampanhas.add(campanha);
+        if (nova) {
+            for (Campanhas c : listaCampanhas) {
+                if (c.getNome().equalsIgnoreCase(campanha.getNome())) {
+                    JOptionPane.showMessageDialog(this, "Essa campanha já existe!", "Aviso", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            }
+            listaCampanhas.add(campanha);
+        } else {
+            for (int i = 0; i < listaCampanhas.size(); i++) {
+                if (listaCampanhas.get(i).getNome().equals(campanha.getNome())) {
+                    listaCampanhas.set(i, campanha);
+                    break;
+                }
+            }
+        }
+
         atualizarLista();
+        guardarCampanhasCSV();
     }
+
+
+
+    private void guardarCampanhasCSV() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(FICHEIRO_CSV))) {
+            for (Campanhas c : listaCampanhas) {
+                writer.println(c.getNome() + ";" +
+                        c.getPublicoAlvo() + ";" +
+                        c.getPromocao() + ";" +
+                        c.getFilmesAssociados() + ";" +
+                        c.getPreco() + ";" +
+                        c.isAtiva());
+            }
+        } catch (IOException e) {
+            System.err.println("Erro ao guardar campanhas: " + e.getMessage());
+        }
+    }
+
+    private void carregarCampanhasCSV() {
+        File file = new File(FICHEIRO_CSV);
+        if (!file.exists()) return;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String linha;
+            while ((linha = reader.readLine()) != null) {
+                String[] partes = linha.split(";");
+                if (partes.length == 6) {
+                    String nome = partes[0];
+                    String publico = partes[1];
+                    String promocao = partes[2];
+                    String filmes = partes[3];
+                    double preco = Double.parseDouble(partes[4]);
+                    boolean ativa = Boolean.parseBoolean(partes[5]);
+
+                    listaCampanhas.add(new Campanhas(nome, publico, promocao, filmes, preco, ativa));
+                }
+            }
+        } catch (IOException | NumberFormatException e) {
+            System.err.println("Erro ao carregar campanhas: " + e.getMessage());
+        }
+    }
+
 }

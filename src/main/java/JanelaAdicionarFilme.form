@@ -26,7 +26,7 @@
             </constraints>
             <properties>
               <background color="-1840417"/>
-              <text value="Título do GestaoFilmes.Filme:"/>
+              <text value="Título do Filme:"/>
             </properties>
           </component>
           <component id="d687b" class="javax.swing.JTextField" binding="txtTitulo">
@@ -80,7 +80,9 @@
                 <constraints/>
                 <properties>
                   <background color="-1840417"/>
+                  <lineWrap value="true"/>
                   <preferredSize width="200" height="80"/>
+                  <wrapStyleWord value="true"/>
                 </properties>
               </component>
             </children>
