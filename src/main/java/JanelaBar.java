@@ -1,13 +1,13 @@
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-
 import GestaoBar.Produto;
 
 public class JanelaBar extends JFrame {
 
-    private DefaultListModel<String> modeloProdutos;
-    private JList<String> listaProdutos;
+    private DefaultListModel<Produto> modeloProdutos;
+    private JList<Produto> listaProdutos;
     private JTextArea detalhesProduto;
     private ArrayList<Produto> listaDeProdutos;
 
@@ -60,60 +60,64 @@ public class JanelaBar extends JFrame {
         add(btnAdicionar);
 
         JButton btnEditar = new JButton("Editar");
-        btnEditar.setBounds(355, 180, 45, 40);
+        btnEditar.setBounds(355, 180, 70, 40);
         btnEditar.setContentAreaFilled(false);
         add(btnEditar);
         btnEditar.addActionListener(e -> {
             int index = listaProdutos.getSelectedIndex();
             if (index != -1) {
-                Produto produtoSelecionado = listaDeProdutos.get(index);
-
+                Produto produtoSelecionado = modeloProdutos.get(index);
                 JanelaEditarProduto janela = new JanelaEditarProduto(this, produtoSelecionado);
                 janela.setVisible(true);
-
-                // Atualiza a lista visual (nome pode ter mudado)
-                modeloProdutos.set(index, produtoSelecionado.nome);
-                detalhesProduto.setText("Nome: " + produtoSelecionado.nome +
-                        "\nCategoria: " + produtoSelecionado.categoria +
-                        "\nPreço: " + produtoSelecionado.preco + " €" +
-                        "\nDesconto: " + produtoSelecionado.desconto + "%");
+                modeloProdutos.set(index, produtoSelecionado);
+                atualizarDetalhes(produtoSelecionado);
             } else {
                 JOptionPane.showMessageDialog(this, "Seleciona um produto para editar.");
             }
         });
 
         JButton btnRemover = new JButton("Remover");
-        btnRemover.setBounds(410, 180, 100, 30);
+        btnRemover.setBounds(430, 180, 100, 30);
         btnRemover.setBackground(Color.RED);
         btnRemover.setForeground(Color.WHITE);
         add(btnRemover);
+        btnRemover.addActionListener(e -> {
+            int index = listaProdutos.getSelectedIndex();
+            if (index != -1) {
+                Produto produtoSelecionado = modeloProdutos.get(index);
+                int resposta = JOptionPane.showConfirmDialog(this,
+                        "Tens a certeza que queres eliminar o produto \"" + produtoSelecionado.nome + "\"?",
+                        "Confirmação", JOptionPane.YES_NO_OPTION);
+                if (resposta == JOptionPane.YES_OPTION) {
+                    produtoSelecionado.stock = 0;
+                    produtoSelecionado.validade = null;
+                    produtoSelecionado.lote = "—";
+                    modeloProdutos.set(index, produtoSelecionado);
+                    atualizarDetalhes(produtoSelecionado);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Seleciona um produto da lista para remover.");
+            }
+        });
 
         JButton btnStock = new JButton("Stock");
-        btnStock.setBounds(410, 220, 100, 30);
+        btnStock.setBounds(430, 220, 100, 30);
         btnStock.setBackground(Color.RED);
         btnStock.setForeground(Color.WHITE);
         add(btnStock);
+        btnStock.addActionListener(e -> new JanelaStock(new ArrayList<>(modeloProdutos.elements().asIterator().next().getClass().isInstance(new Produto("","",0,0)) ? modeloProdutos.elements().asIterator().next().getClass().getDeclaredConstructors().length == 0 ? null : listaProdutos.getSelectedValuesList() : null)));
 
         JButton btnHistorico = new JButton("Histórico");
-        btnHistorico.setBounds(410, 260, 100, 30);
+        btnHistorico.setBounds(430, 260, 100, 30);
         btnHistorico.setBackground(Color.RED);
         btnHistorico.setForeground(Color.WHITE);
         add(btnHistorico);
 
         listaDeProdutos = new ArrayList<>();
-
-        adicionarProduto(new Produto("Água 50cl", "Bebida", 1.00, 0));
-        adicionarProduto(new Produto("Sumo Laranja", "Sumo", 1.50, 10));
-        adicionarProduto(new Produto("Chips", "Snack", 1.20, 5));
-
         listaProdutos.addListSelectionListener(e -> {
-            int index = listaProdutos.getSelectedIndex();
-            if (index >= 0 && index < listaDeProdutos.size()) {
-                Produto p = listaDeProdutos.get(index);
-                detalhesProduto.setText("Nome: " + p.nome +
-                        "\nCategoria: " + p.categoria +
-                        "\nPreço: " + p.preco + " €" +
-                        "\nDesconto: " + p.desconto + "%");
+            Produto p = listaProdutos.getSelectedValue();
+            if (p != null) {
+                atualizarDetalhes(p);
             }
         });
 
@@ -136,6 +140,13 @@ public class JanelaBar extends JFrame {
 
     private void adicionarProduto(Produto produto) {
         listaDeProdutos.add(produto);
-        modeloProdutos.addElement(produto.nome);
+        modeloProdutos.addElement(produto);
+    }
+
+    private void atualizarDetalhes(Produto p) {
+        detalhesProduto.setText("Nome: " + p.nome +
+                "\nCategoria: " + p.categoria +
+                "\nPreço: " + p.preco + " €" +
+                "\nDesconto: " + p.desconto + "%");
     }
 }

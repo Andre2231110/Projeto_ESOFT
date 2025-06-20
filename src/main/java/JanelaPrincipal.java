@@ -33,9 +33,15 @@ public class JanelaPrincipal  extends JFrame{
 
         lblUser.setText(nomeUser);
 
+        btnFilmes.addActionListener(e -> {
+        new JanelaFilmes(nomeUser);
+            setVisible(false);
+        });
 
 
-        // Os outros botões ainda não fazem nada
+
+
+     // Os outros botões ainda não fazem nada
         btnVendaBilhetes.addActionListener(e -> JOptionPane.showMessageDialog(this, "Ainda por implementar"));
         btnSessoes.addActionListener(e -> JOptionPane.showMessageDialog(this, "Ainda por implementar"));
         btnSalas.addActionListener(e -> JOptionPane.showMessageDialog(this, "Ainda por implementar"));

@@ -1,16 +1,37 @@
 
 package GestaoBar;
+import java.time.LocalDate;
+
 public class Produto {
     public String nome;
     public String categoria;
     public double preco;
     public int desconto;
 
+    public int stock;
+    public LocalDate  validade;
+    public String lote;
+
     public Produto(String nome, String categoria, double preco, int desconto) {
         this.nome = nome;
         this.categoria = categoria;
         this.preco = preco;
         this.desconto = desconto;
+
+        this.stock = 0;
+        this.validade = null;
+        this.lote = "—";
+    }
+
+    public Produto(String nome, String categoria, double preco, int desconto,
+                   int stock, String validade, String lote) {
+        this.nome = nome;
+        this.categoria = categoria;
+        this.preco = preco;
+        this.desconto = desconto;
+        this.stock = stock;
+        this.validade = null;
+        this.lote = lote;
     }
 
     public void setNome(String nome) { this.nome = nome; }
