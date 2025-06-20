@@ -1,5 +1,3 @@
-
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -25,7 +23,7 @@ public class JanelaStock extends JFrame {
         modeloTabela = new DefaultTableModel(colunas, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // evita edição direta
+                return false; // impede edição direta na tabela
             }
         };
 
@@ -48,15 +46,14 @@ public class JanelaStock extends JFrame {
     }
 
     private void atualizarTabela() {
-        modeloTabela.setRowCount(0); // limpa tudo
-
+        modeloTabela.setRowCount(0); // limpa a tabela
 
         for (Produto p : produtos) {
             modeloTabela.addRow(new Object[]{
                     p.nome,
                     p.stock,
-                    p.validade != null ? p.validade.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))  : "—",
-                    p.lote
+                    (p.validade != null) ? p.validade : "—",
+                    (p.lote != null && !p.lote.isEmpty()) ? p.lote : "—"
             });
         }
     }
@@ -69,10 +66,11 @@ public class JanelaStock extends JFrame {
         }
 
         Produto produto = produtos.get(linha);
-        JanelaEditarStock janela = new JanelaEditarStock(this, produto);
+        JanelaEditarStock janela = new JanelaEditarStock(this, produto); // assume que tens esta classe
         janela.setVisible(true);
-        atualizarTabela(); // garante atualização
+        atualizarTabela(); // atualiza a tabela após edição
     }
+
     private void eliminarProdutoSelecionado() {
         int linha = tabela.getSelectedRow();
         if (linha == -1) {
@@ -94,8 +92,7 @@ public class JanelaStock extends JFrame {
             produto.validade = null;
             produto.lote = "—";
 
-            atualizarTabela(); // mostra as alterações na UI
+            atualizarTabela(); // reflete as mudanças na UI
         }
     }
-
 }

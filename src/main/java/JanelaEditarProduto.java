@@ -1,7 +1,8 @@
-
-import GestaoBar.Produto;
-
 import javax.swing.*;
+import java.awt.*;
+import java.io.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import GestaoBar.Produto;
 
 public class JanelaEditarProduto extends JDialog {
@@ -13,6 +14,7 @@ public class JanelaEditarProduto extends JDialog {
     private JButton btnCancelar;
 
     private Produto produtoEditado;
+    private static final String CSV_FILE = "produtos.csv";
 
     public JanelaEditarProduto(JFrame parent, Produto produto) {
         super(parent, "Editar Produto", true);
@@ -61,23 +63,29 @@ public class JanelaEditarProduto extends JDialog {
                 String nome = txtNome.getText();
                 String categoria = txtCategoria.getText();
                 double preco = Double.parseDouble(txtPreco.getText());
-                int desconto = Integer.parseInt(txtDesconto.getText());
+                double desconto = Double.parseDouble(txtDesconto.getText()); // assumindo double
 
                 if (nome.isEmpty() || categoria.isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Preenche todos os campos.");
                     return;
                 }
 
-                // Atualiza os dados do produto original
+                // Atualiza os dados no objeto original
                 produto.setNome(nome);
                 produto.setCategoria(categoria);
                 produto.setPreco(preco);
-                produto.setDesconto(desconto);
+                produto.setDesconto((int) desconto);
+
+                // Atualiza o ficheiro CSV
+                atualizarProdutoCSV(produto);
 
                 produtoEditado = produto;
                 dispose();
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Preço ou desconto inválidos.");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao guardar no ficheiro.");
+                ex.printStackTrace();
             }
         });
 
@@ -86,5 +94,44 @@ public class JanelaEditarProduto extends JDialog {
 
     public Produto getProdutoEditado() {
         return produtoEditado;
+    }
+
+    private void atualizarProdutoCSV(Produto produtoEditado) throws IOException {
+        File ficheiro = new File(CSV_FILE);
+        ArrayList<Produto> produtos = new ArrayList<>();
+
+        // Ler todos os produtos do CSV
+        try (BufferedReader br = new BufferedReader(new FileReader(ficheiro))) {
+            String linha;
+            while ((linha = br.readLine()) != null) {
+                String[] partes = linha.split(",", -1);
+                if (partes.length >= 7) {
+                    Produto p = new Produto(
+                            partes[0],
+                            partes[1],
+                            Double.parseDouble(partes[2]),
+                            (int) Double.parseDouble(partes[3])
+                    );
+                    p.stock = Integer.parseInt(partes[4]);
+                    p.lote = partes[5];
+                    p.validade = partes[6].isEmpty() ? null : LocalDate.parse(partes[6]);
+
+                    // Substituir se for o produto que foi editado
+                    if (p.getNome().equals(produtoEditado.getNome())) {
+                        produtos.add(produtoEditado);
+                    } else {
+                        produtos.add(p);
+                    }
+                }
+            }
+        }
+
+        // Reescrever o ficheiro com os produtos atualizados
+        try (PrintWriter pw = new PrintWriter(new FileWriter(ficheiro))) {
+            for (Produto p : produtos) {
+                pw.println(p.nome + "," + p.categoria + "," + p.preco + "," + p.desconto + "," +
+                        p.stock + "," + p.lote + "," + (p.validade != null ? p.validade : ""));
+            }
+        }
     }
 }

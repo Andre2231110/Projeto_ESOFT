@@ -5,21 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0a5a794f-2fdc-44b9-a415-5466020637df" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaEditarStock.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaEditarStock.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaEliminarProduto.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaEliminarProduto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaFilmes.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaSalas.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaSalas.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaStock.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaStock.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Funcionario.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaAdicionarFunc.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaAdicionarFunc.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaDetalhesFilme.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaDetalhesFilme.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaEditarFunc.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaEditarFunc.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaEliminarFunc.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaEliminarFunc.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaFilmes.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaFuncionario.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaFuncionario.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/GestaoBar/Produto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/GestaoBar/Produto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Filme.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Filme.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/JanelaAdicionarFilme.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JanelaAdicionarFilme.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/JanelaAdicionarProduto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JanelaAdicionarProduto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/JanelaBar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JanelaBar.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/JanelaEditarProduto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JanelaEditarProduto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/JanelaEditarStock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JanelaEditarStock.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/JanelaEliminarProduto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JanelaEliminarProduto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/JanelaFilmes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JanelaFilmes.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/JanelaPrincipal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JanelaPrincipal.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Sala.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Sala.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/JanelaStock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JanelaStock.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,6 +117,7 @@
       <workItem from="1750350033824" duration="2411000" />
       <workItem from="1750352482279" duration="665000" />
       <workItem from="1750354139559" duration="9286000" />
+      <workItem from="1750409528725" duration="7492000" />
     </task>
     <servers />
   </component>

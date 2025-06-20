@@ -1,6 +1,8 @@
-import GestaoBar.Produto;
-
 import javax.swing.*;
+import java.awt.*;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import GestaoBar.Produto;
 
 public class JanelaAdicionarProduto extends JDialog {
     private JTextField txtNome;
@@ -11,6 +13,8 @@ public class JanelaAdicionarProduto extends JDialog {
     private JButton btnCancelar;
 
     private Produto produtoCriado;
+
+    private static final String CSV_FILE = "produtos.csv";
 
     public JanelaAdicionarProduto(JFrame parent) {
         super(parent, "Adicionar Produto", true);
@@ -32,14 +36,14 @@ public class JanelaAdicionarProduto extends JDialog {
         txtCategoria.setBounds(150, 70, 200, 25);
         add(txtCategoria);
 
-        JLabel lblPreco = new JLabel("Preço:");
+        JLabel lblPreco = new JLabel("Preço (€):");
         lblPreco.setBounds(30, 110, 100, 25);
         add(lblPreco);
         txtPreco = new JTextField();
         txtPreco.setBounds(150, 110, 200, 25);
         add(txtPreco);
 
-        JLabel lblDesconto = new JLabel("Desconto:");
+        JLabel lblDesconto = new JLabel("Desconto (%):");
         lblDesconto.setBounds(30, 150, 100, 25);
         add(lblDesconto);
         txtDesconto = new JTextField();
@@ -56,20 +60,24 @@ public class JanelaAdicionarProduto extends JDialog {
 
         btnAdicionar.addActionListener(e -> {
             try {
-                String nome = txtNome.getText();
-                String categoria = txtCategoria.getText();
-                double preco = Double.parseDouble(txtPreco.getText());
-                int desconto = Integer.parseInt(txtDesconto.getText());
+                String nome = txtNome.getText().trim();
+                String categoria = txtCategoria.getText().trim();
+                double preco = Double.parseDouble(txtPreco.getText().trim());
+                int desconto = Integer.parseInt(txtDesconto.getText().trim());
 
-                if (nome.isEmpty() || categoria.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Preenche todos os campos.");
-                    return;
-                }
-
+                // Criação do produto com os campos essenciais
                 produtoCriado = new Produto(nome, categoria, preco, desconto);
+
+                // Guardar no CSV
+                guardarProdutoCSV(produtoCriado);
+
+                // Fechar a janela
                 dispose();
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Preço ou desconto inválidos.");
+                JOptionPane.showMessageDialog(this, "Insere valores válidos para preço e desconto.");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao guardar o produto: " + ex.getMessage());
+                ex.printStackTrace();
             }
         });
 
@@ -78,5 +86,12 @@ public class JanelaAdicionarProduto extends JDialog {
 
     public Produto getProdutoCriado() {
         return produtoCriado;
+    }
+
+    private void guardarProdutoCSV(Produto p) throws Exception {
+        try (PrintWriter pw = new PrintWriter(new FileWriter(CSV_FILE, true))) {
+            pw.println(p.nome + "," + p.categoria + "," + p.preco + "," + p.desconto + "," +
+                    p.stock + "," + p.lote + "," + (p.validade != null ? p.validade : ""));
+        }
     }
 }

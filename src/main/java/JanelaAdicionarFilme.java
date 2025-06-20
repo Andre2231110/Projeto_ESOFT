@@ -20,13 +20,48 @@ public class JanelaAdicionarFilme extends JDialog {
     private JButton adicionarBtn;
 
     private String imagemSelecionada = null;
+    private JanelaFilmes janelaFilmes;
+    private Filme filmeOriginal = null;
 
-    public JanelaAdicionarFilme(JFrame parent) {
+    public JanelaAdicionarFilme(JFrame parent, JanelaFilmes janelaFilmes) {
         super(parent, "Adicionar Filme", true);
+        this.janelaFilmes = janelaFilmes;
+
+        initJanela(parent);
+        setVisible(true);
+    }
+
+    public JanelaAdicionarFilme(JFrame parent, JanelaFilmes janelaFilmes, Filme filmeAEditar) {
+        super(parent, "Editar Filme", true);
+        this.janelaFilmes = janelaFilmes;
+        this.filmeOriginal = filmeAEditar;
+
+        initJanela(parent);
+
+        txtTitulo.setText(filmeAEditar.getTitulo());
+        txtDuracao.setText(String.valueOf(filmeAEditar.getDuracao()));
+        txtSinopse.setText(filmeAEditar.getSinopse());
+        txtGenero.setText(filmeAEditar.getGenero());
+
+        imagemSelecionada = filmeAEditar.getImagem();
+        ImageIcon icon = new ImageIcon(imagemSelecionada);
+        Image img = icon.getImage().getScaledInstance(120, 160, Image.SCALE_SMOOTH);
+        lblPreviewImagem.setIcon(new ImageIcon(img));
+        lblPreviewImagem.setText("");
+
+        adicionarBtn.setText("Guardar"); // muda o texto do botão
+        setVisible(true);
+    }
+
+    private void initJanela(JFrame parent) {
         setContentPane(contentPane);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setSize(600, 500);
         setLocationRelativeTo(parent);
+
+        lblPreviewImagem.setOpaque(true);
+        lblPreviewImagem.setBackground(new Color(216, 245, 209));
+        lblPreviewImagem.setText("+");
 
         lblPreviewImagem.addMouseListener(new MouseAdapter() {
             @Override
@@ -35,9 +70,7 @@ public class JanelaAdicionarFilme extends JDialog {
             }
         });
 
-        adicionarBtn.addActionListener(e -> adicionarFilme());
-
-        setVisible(true);
+        adicionarBtn.addActionListener(e -> adicionarOuEditarFilme());
     }
 
     private void escolherImagem() {
@@ -45,7 +78,8 @@ public class JanelaAdicionarFilme extends JDialog {
         fileChooser.setDialogTitle("Selecionar imagem do filme");
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setAcceptAllFileFilterUsed(false);
-        fileChooser.addChoosableFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Imagens", "jpg", "png", "jpeg"));
+        fileChooser.addChoosableFileFilter(
+                new javax.swing.filechooser.FileNameExtensionFilter("Imagens", "jpg", "png", "jpeg"));
 
         int resultado = fileChooser.showOpenDialog(this);
 
@@ -60,7 +94,7 @@ public class JanelaAdicionarFilme extends JDialog {
         }
     }
 
-    private void adicionarFilme() {
+    private void adicionarOuEditarFilme() {
         String titulo = txtTitulo.getText().trim();
         String duracaoStr = txtDuracao.getText().trim();
         String sinopse = txtSinopse.getText().trim();
@@ -73,8 +107,24 @@ public class JanelaAdicionarFilme extends JDialog {
 
         try {
             int duracao = Integer.parseInt(duracaoStr);
-            JOptionPane.showMessageDialog(this, "Filme \"" + titulo + "\" adicionado com sucesso!");
+
+            if (filmeOriginal != null) {
+                filmeOriginal.setTitulo(titulo);
+                filmeOriginal.setDuracao(duracao);
+                filmeOriginal.setSinopse(sinopse);
+                filmeOriginal.setGenero(genero);
+                filmeOriginal.setImagem(imagemSelecionada);
+
+                janelaFilmes.atualizarLista();
+                JOptionPane.showMessageDialog(this, "Filme atualizado com sucesso!");
+            } else {
+                Filme novo = new Filme(titulo, duracao, sinopse, genero, imagemSelecionada);
+                janelaFilmes.adicionarFilme(novo);
+                JOptionPane.showMessageDialog(this, "Filme adicionado com sucesso!");
+            }
+
             dispose();
+
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "A duração deve ser um número inteiro.");
         }
