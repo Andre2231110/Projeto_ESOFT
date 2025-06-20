@@ -1,6 +1,11 @@
 import GestaoBar.Produto;
 
 import javax.swing.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
 
 public class JanelaAdicionarProduto extends JDialog {
     private JTextField txtNome;
