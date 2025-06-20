@@ -5,24 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0a5a794f-2fdc-44b9-a415-5466020637df" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/Campanhas.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaCampanhas.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaCampanhas.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaEditarCampanha.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaEditarCampanha.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaVendaFilmes.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaVendaFilmes.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaVendaSessoes.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/JanelaVendaSessoes.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Filme.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Filme.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/JanelaAdicionarFilme.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JanelaAdicionarFilme.form" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/JanelaDetalhesFilme.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JanelaDetalhesFilme.form" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/JanelaDetalhesFilme.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JanelaDetalhesFilme.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/JanelaFilmes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JanelaFilmes.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/JanelaPrincipal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JanelaPrincipal.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Sala.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Sala.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/JanelaSalas.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JanelaSalas.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,13 +59,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\matil\OneDrive\Ambiente de Trabalho\ESoft\Projeto_ESOFT\src\main\java" />
-      <recent name="C:\Users\matil\OneDrive\Ambiente de Trabalho\ESoft\Projeto_ESOFT\src\main\java\view" />
-      <recent name="C:\Users\matil\OneDrive\Ambiente de Trabalho\ESoft\Projeto_ESOFT\src\main\java\GestaoFilmes" />
       <recent name="C:\Users\matil\OneDrive\Ambiente de Trabalho\ESoft\Projeto_ESOFT\src\main\java\JanelaPrincipal.java" />
-    </key>
-    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
-      <recent name="" />
     </key>
   </component>
   <component name="RunManager">
@@ -118,7 +96,7 @@
       <workItem from="1750350033824" duration="2411000" />
       <workItem from="1750352482279" duration="665000" />
       <workItem from="1750354139559" duration="9286000" />
-      <workItem from="1750409528725" duration="19920000" />
+      <workItem from="1750409528725" duration="7492000" />
     </task>
     <servers />
   </component>
