@@ -19,6 +19,7 @@ public class JanelaSalas extends JFrame {
     private JButton btnAdicionar;
     private JButton btnEditar;
     private JButton btnRemover;
+    private JButton btnReservas;
     private JButton btnSair;
 
 
@@ -99,12 +100,15 @@ public class JanelaSalas extends JFrame {
         btnEditar = new JButton("Editar");
         btnRemover = new JButton("Remover");
         btnSair = new JButton("Sair");
+        btnReservas = new JButton("Reservas");
+
 
 
 
         painelBotoes.add(btnAdicionar);
         painelBotoes.add(btnEditar);
         painelBotoes.add(btnRemover);
+        painelBotoes.add(btnReservas);
         painelBotoes.add(btnSair);
 
 
@@ -114,6 +118,9 @@ public class JanelaSalas extends JFrame {
         btnEditar.addActionListener(e -> editarSala());
         btnRemover.addActionListener(e -> removerSala());
         btnSair.addActionListener(e -> dispose());
+
+
+        btnReservas.addActionListener(e -> abrirJanelaReservas());
     }
 
     private void adicionarSala() {
@@ -325,6 +332,20 @@ public class JanelaSalas extends JFrame {
         }
 
         return true;
+    }
+
+    private void abrirJanelaReservas() {
+        int linhaSelecionada = tabelaSalas.getSelectedRow();
+        if (linhaSelecionada == -1) {
+            JOptionPane.showMessageDialog(this,
+                    "Nenhuma sala selecionada.",
+                    "Aviso",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        Sala salaSelecionada = listaSalas.get(linhaSelecionada);
+        new JanelaReservas(this, salaSelecionada); // nova janela
     }
 
 }
