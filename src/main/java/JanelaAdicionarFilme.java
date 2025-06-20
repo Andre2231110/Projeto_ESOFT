@@ -123,10 +123,13 @@ public class JanelaAdicionarFilme extends JDialog {
                 JOptionPane.showMessageDialog(this, "Filme adicionado com sucesso!");
             }
 
+            janelaFilmes.guardarFilmesCSV();
+
             dispose();
 
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "A duração deve ser um número inteiro.");
         }
     }
+
 }

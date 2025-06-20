@@ -15,6 +15,17 @@ public class Filme {
         this.imagem = imagem;
     }
 
+    public Filme(String titulo, int duracao, String sinopse, String genero, String imagem,
+                 int lugaresOcupados, int capacidade) {
+        this.titulo = titulo;
+        this.duracao = duracao;
+        this.sinopse = sinopse;
+        this.genero = genero;
+        this.imagem = imagem;
+        this.lugaresOcupados = lugaresOcupados;
+        this.capacidade = capacidade;
+    }
+
     public String getTitulo() { return titulo; }
     public int getDuracao() { return duracao; }
     public String getSinopse() { return sinopse; }
@@ -28,6 +39,16 @@ public class Filme {
     public void setSinopse(String sinopse) { this.sinopse = sinopse; }
     public void setGenero(String genero) { this.genero = genero; }
     public void setImagem(String imagem) { this.imagem = imagem; }
+    public void setLugaresOcupados(int lugaresOcupados) { this.lugaresOcupados = lugaresOcupados; }
+    public void setCapacidade(int capacidade) { this.capacidade = capacidade; }
 
-
+    public String toCSV() {
+        return titulo + ";" +
+                duracao + ";" +
+                sinopse + ";" +
+                genero + ";" +
+                imagem + ";" +
+                lugaresOcupados + ";" +
+                capacidade;
+    }
 }

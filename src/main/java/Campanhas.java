@@ -16,64 +16,17 @@ public class Campanhas {
         this.ativa = ativa;
     }
 
-    public String getNome() {
-        return nome;
-    }
+    public String getNome() { return nome; }
+    public String getPublicoAlvo() { return publicoAlvo; }
+    public String getPromocao() { return promocao; }
+    public String getFilmesAssociados() { return filmesAssociados; }
+    public double getPreco() { return preco; }
+    public boolean isAtiva() { return ativa; }
 
-    public String getPublicoAlvo() {
-        return publicoAlvo;
-    }
-
-    public String getPromocao() {
-        return promocao;
-    }
-
-    public String getFilmesAssociados() {
-        return filmesAssociados;
-    }
-
-    public double getPreco() {
-        return preco;
-    }
-
-    public boolean isAtiva() {
-        return ativa;
-    }
-
-    // Setters
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public void setPublicoAlvo(String publicoAlvo) {
-        this.publicoAlvo = publicoAlvo;
-    }
-
-    public void setPromocao(String promocao) {
-        this.promocao = promocao;
-    }
-
-    public void setFilmesAssociados(String filmesAssociados) {
-        this.filmesAssociados = filmesAssociados;
-    }
-
-    public void setPreco(double preco) {
-        this.preco = preco;
-    }
-
-    public void setAtiva(boolean ativa) {
-        this.ativa = ativa;
-    }
-
-    @Override
-    public String toString() {
-        return "Campanha{" +
-                "nome='" + nome + '\'' +
-                ", publicoAlvo='" + publicoAlvo + '\'' +
-                ", promocao='" + promocao + '\'' +
-                ", filmesAssociados='" + filmesAssociados + '\'' +
-                ", preco=" + preco +
-                ", ativa=" + ativa +
-                '}';
-    }
+    public void setNome(String nome) { this.nome = nome; }
+    public void setPublicoAlvo(String publicoAlvo) { this.publicoAlvo = publicoAlvo; }
+    public void setPromocao(String promocao) { this.promocao = promocao; }
+    public void setFilmesAssociados(String filmesAssociados) { this.filmesAssociados = filmesAssociados; }
+    public void setPreco(double preco) { this.preco = preco; }
+    public void setAtiva(boolean ativa) { this.ativa = ativa; }
 }

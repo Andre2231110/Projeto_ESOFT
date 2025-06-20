@@ -20,17 +20,30 @@ public class JanelaDetalhesFilme extends JDialog {
 
         setContentPane(contentPane);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(600, 600);
+        setSize(800, 600);
         setLocationRelativeTo(parent);
 
-        lblTitulo.setText(lblTitulo.getText() + " " + filme.getTitulo());
-        lblDuracao.setText(lblDuracao.getText() + " " + filme.getDuracao() + " min");
-        lblGenero.setText(lblGenero.getText() + " " + filme.getGenero());
-        lblSinopse.setText("<html>" + lblSinopse.getText() + "<br>" + filme.getSinopse() + "</html>");
+        // Texto com HTML e estilo fixo
+        lblTitulo.setText("<html><b>Título do Filme:</b> " + filme.getTitulo() + "</html>");
+        lblDuracao.setText("<html><b>Duração:</b> " + filme.getDuracao() + " min</html>");
+        lblGenero.setText("<html><b>Género:</b> " + filme.getGenero() + "</html>");
+        lblSinopse.setText("<html><b>Sinopse:</b><br><div style='width:400px'>" + filme.getSinopse() + "</div></html>");
 
-        ImageIcon icon = new ImageIcon(filme.getImagem());
-        Image img = icon.getImage().getScaledInstance(180, 240, Image.SCALE_SMOOTH);
-        lblImagem.setIcon(new ImageIcon(img));
+        // Carregar imagem após layout estar pronto
+        SwingUtilities.invokeLater(() -> {
+            ImageIcon icon = new ImageIcon(filme.getImagem());
+
+            int largura = lblImagem.getWidth();
+            int altura = lblImagem.getHeight();
+
+            if (largura == 0 || altura == 0) {
+                largura = 180;
+                altura = 240;
+            }
+
+            Image img = icon.getImage().getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
+            lblImagem.setIcon(new ImageIcon(img));
+        });
 
         cancelarButton.addActionListener(e -> dispose());
 
@@ -38,12 +51,15 @@ public class JanelaDetalhesFilme extends JDialog {
             int resposta = JOptionPane.showConfirmDialog(this, "Deseja remover este filme?", "Confirmar remoção", JOptionPane.YES_NO_OPTION);
             if (resposta == JOptionPane.YES_OPTION) {
                 ((JanelaFilmes) parent).removerFilme(filme);
+                ((JanelaFilmes) parent).guardarFilmesCSV();
                 dispose();
             }
         });
 
         editarButton.addActionListener(e -> {
             new JanelaAdicionarFilme((JFrame) parent, (JanelaFilmes) parent, filme);
+            ((JanelaFilmes) parent).atualizarLista();
+            ((JanelaFilmes) parent).guardarFilmesCSV();
             dispose();
         });
 
