@@ -63,6 +63,24 @@ public class JanelaBar extends JFrame {
         btnEditar.setBounds(355, 180, 45, 40);
         btnEditar.setContentAreaFilled(false);
         add(btnEditar);
+        btnEditar.addActionListener(e -> {
+            int index = listaProdutos.getSelectedIndex();
+            if (index != -1) {
+                Produto produtoSelecionado = listaDeProdutos.get(index);
+
+                JanelaEditarProduto janela = new JanelaEditarProduto(this, produtoSelecionado);
+                janela.setVisible(true);
+
+                // Atualiza a lista visual (nome pode ter mudado)
+                modeloProdutos.set(index, produtoSelecionado.nome);
+                detalhesProduto.setText("Nome: " + produtoSelecionado.nome +
+                        "\nCategoria: " + produtoSelecionado.categoria +
+                        "\nPreço: " + produtoSelecionado.preco + " €" +
+                        "\nDesconto: " + produtoSelecionado.desconto + "%");
+            } else {
+                JOptionPane.showMessageDialog(this, "Seleciona um produto para editar.");
+            }
+        });
 
         JButton btnRemover = new JButton("Remover");
         btnRemover.setBounds(410, 180, 100, 30);
