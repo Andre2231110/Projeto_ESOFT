@@ -1,7 +1,5 @@
 public class Sala {
 
-
-
     private String nome;
     private String tipo;
     private String layout;

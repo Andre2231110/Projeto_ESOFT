@@ -1,8 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 
-
-public class JanelaPrincipal  extends JFrame{
+public class JanelaPrincipal extends JFrame {
     private JPanel painelTopo;
     private JLabel lblUser;
     private JButton btnVendaBilhetes;
@@ -34,23 +33,26 @@ public class JanelaPrincipal  extends JFrame{
         lblUser.setText(nomeUser);
 
         btnFilmes.addActionListener(e -> {
-        new JanelaFilmes(nomeUser);
-            setVisible(false);
-        });
-
-
-
-
-     // Os outros botões ainda não fazem nada
-        btnVendaBilhetes.addActionListener(e -> JOptionPane.showMessageDialog(this, "Ainda por implementar"));
-        btnSessoes.addActionListener(e -> JOptionPane.showMessageDialog(this, "Ainda por implementar"));
-        btnSalas.addActionListener(e -> JOptionPane.showMessageDialog(this, "Ainda por implementar"));
-        btnBar.addActionListener(e -> {
-            new JanelaBar(lblUser.getText());
+            new JanelaFilmes(nomeUser);
             dispose();
         });
-        btnCampanhas.addActionListener(e -> JOptionPane.showMessageDialog(this, "Ainda por implementar"));
-        btnFuncionarios.addActionListener(e -> new JanelaFuncionario(lblUser.getText()));
+
+        btnVendaBilhetes.addActionListener(e -> JOptionPane.showMessageDialog(this, "Ainda por implementar"));
+        btnSessoes.addActionListener(e -> JOptionPane.showMessageDialog(this, "Ainda por implementar"));
+        btnSalas.addActionListener(e -> {
+            new JanelaSalas();
+
+        });
+        btnBar.addActionListener(e -> {
+            new JanelaBar(nomeUser);
+            dispose();
+        });
+        btnCampanhas.addActionListener(e -> {
+            new JanelaCampanhas(nomeUser);
+            dispose();
+        });
+
+        btnFuncionarios.addActionListener(e -> JOptionPane.showMessageDialog(this, "Ainda por implementar"));
         btnConsultas.addActionListener(e -> JOptionPane.showMessageDialog(this, "Ainda por implementar"));
 
         setVisible(true);
@@ -62,5 +64,5 @@ public class JanelaPrincipal  extends JFrame{
         botao.setIcon(new ImageIcon(imagemRedimensionada));
         botao.setFont(new Font("Arial", Font.BOLD, 14));
     }
-
 }
+

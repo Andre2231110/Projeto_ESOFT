@@ -26,7 +26,7 @@
             </constraints>
             <properties>
               <background color="-1840417"/>
-              <font size="14" style="1"/>
+              <font size="14"/>
               <text value="Título do Filme:"/>
             </properties>
           </component>
@@ -36,7 +36,7 @@
             </constraints>
             <properties>
               <background color="-1840417"/>
-              <font size="14" style="1"/>
+              <font size="14"/>
               <text value="Duração:"/>
             </properties>
           </component>
@@ -46,7 +46,7 @@
             </constraints>
             <properties>
               <background color="-1840417"/>
-              <font size="14" style="1"/>
+              <font size="14"/>
               <text value="Sínopse:"/>
             </properties>
           </component>
@@ -56,7 +56,7 @@
             </constraints>
             <properties>
               <background color="-1840417"/>
-              <font size="14" style="1"/>
+              <font size="14"/>
               <text value="Género:"/>
             </properties>
           </component>

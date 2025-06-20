@@ -5,6 +5,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class JanelaFilmes extends JFrame {
     private JPanel contentPane;
     private JPanel painelTopo;
