@@ -1,11 +1,11 @@
-import javax.swing.*;
-
 public class Filme {
     private String titulo;
     private int duracao;
     private String sinopse;
     private String genero;
     private String imagem;
+    private int lugaresOcupados;
+    private int capacidade;
 
     public Filme(String titulo, int duracao, String sinopse, String genero, String imagem) {
         this.titulo = titulo;
@@ -20,6 +20,8 @@ public class Filme {
     public String getSinopse() { return sinopse; }
     public String getGenero() { return genero; }
     public String getImagem() { return imagem; }
+    public int getLugaresOcupados() { return lugaresOcupados; }
+    public int getCapacidade() { return capacidade; }
 
     public void setTitulo(String titulo) { this.titulo = titulo; }
     public void setDuracao(int duracao) { this.duracao = duracao; }

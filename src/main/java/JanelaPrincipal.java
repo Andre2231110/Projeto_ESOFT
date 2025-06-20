@@ -47,7 +47,11 @@ public class JanelaPrincipal extends JFrame {
             new JanelaBar(nomeUser);
             dispose();
         });
-        btnCampanhas.addActionListener(e -> JOptionPane.showMessageDialog(this, "Ainda por implementar"));
+        btnCampanhas.addActionListener(e -> {
+            new JanelaCampanhas(nomeUser);
+            dispose();
+        });
+
         btnFuncionarios.addActionListener(e -> JOptionPane.showMessageDialog(this, "Ainda por implementar"));
         btnConsultas.addActionListener(e -> JOptionPane.showMessageDialog(this, "Ainda por implementar"));
 

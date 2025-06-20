@@ -20,7 +20,7 @@ public class JanelaDetalhesFilme extends JDialog {
 
         setContentPane(contentPane);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(500, 600);
+        setSize(600, 600);
         setLocationRelativeTo(parent);
 
         lblTitulo.setText(lblTitulo.getText() + " " + filme.getTitulo());
