@@ -1,3 +1,4 @@
+// (as importações ficam iguais)
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
@@ -72,7 +73,7 @@ public class JanelaBar extends JFrame {
                 janela.setVisible(true);
                 modeloProdutos.set(index, produtoSelecionado);
                 atualizarDetalhes(produtoSelecionado);
-                guardarProdutosCSV(); // guardar alterações
+                guardarProdutosCSV();
             } else {
                 JOptionPane.showMessageDialog(this, "Seleciona um produto para editar.");
             }
@@ -88,7 +89,7 @@ public class JanelaBar extends JFrame {
             if (index != -1) {
                 Produto produtoSelecionado = modeloProdutos.get(index);
                 int resposta = JOptionPane.showConfirmDialog(this,
-                        "Tens a certeza que queres eliminar o produto \"" + produtoSelecionado.nome + "\"?",
+                        "Tens a certeza que queres eliminar o produto \"" + produtoSelecionado.getNome() + "\"?",
                         "Confirmação", JOptionPane.YES_NO_OPTION);
                 if (resposta == JOptionPane.YES_OPTION) {
                     modeloProdutos.remove(index);
@@ -107,10 +108,7 @@ public class JanelaBar extends JFrame {
         btnStock.setBackground(Color.RED);
         btnStock.setForeground(Color.WHITE);
         add(btnStock);
-        btnStock.addActionListener(e -> {
-            new JanelaStock(new ArrayList<>(listaDeProdutos));
-        });
-
+        btnStock.addActionListener(e -> new JanelaStock(new ArrayList<>(listaDeProdutos)));
 
         JButton btnHistorico = new JButton("Histórico");
         btnHistorico.setBounds(430, 280, 100, 30);
@@ -151,70 +149,44 @@ public class JanelaBar extends JFrame {
     }
 
     private void atualizarDetalhes(Produto p) {
-        detalhesProduto.setText("Nome: " + p.nome +
-                "\nCategoria: " + p.categoria +
-                "\nPreço: " + p.preco + " €" +
-                "\nDesconto: " + p.desconto + "%" );
-
+        detalhesProduto.setText("Nome: " + p.getNome() +
+                "\nCategoria: " + p.getCategoria() +
+                "\nPreço: " + p.getPreco() + " €" +
+                "\nDesconto: " + p.getDesconto() + "%");
     }
 
     private void carregarProdutosCSV() {
         try (BufferedReader br = new BufferedReader(new FileReader(CSV_FILE))) {
             String linha;
             while ((linha = br.readLine()) != null) {
-                String[] partes = linha.split(",", -1); // -1 mantém campos vazios
-                if (partes.length >= 7) {
+                String[] partes = linha.split(",", -1);
+                if (partes.length >= 8) {
                     Produto p = new Produto(
-                            partes[0],                          // nome
-                            partes[1],                          // categoria
-                            Double.parseDouble(partes[2]),      // preco
-                            (int) Double.parseDouble(partes[3])       // desconto
+                            partes[0],
+                            partes[1],
+                            Double.parseDouble(partes[2]),
+                            Double.parseDouble(partes[3]),
+                            Integer.parseInt(partes[4])
                     );
-                    p.stock = Integer.parseInt(partes[4]);
-                    p.lote = partes[5];
-                    p.validade = partes[6].isEmpty() ? null : LocalDate.parse(partes[6]);
+                    p.setStock(Integer.parseInt(partes[5]));
+                    p.setLote(partes[6]);
+                    p.setValidade(partes[7].isEmpty() ? null : LocalDate.parse(partes[7]));
                     adicionarProduto(p);
                 }
             }
         } catch (FileNotFoundException ignored) {
-            // ficheiro ainda não existe
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private ArrayList<Produto> lerProdutosDoCSV() {
-        ArrayList<Produto> produtos = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(CSV_FILE))) {
-            String linha;
-            while ((linha = br.readLine()) != null) {
-                String[] partes = linha.split(",", -1);
-                if (partes.length >= 7) {
-                    Produto p = new Produto(
-                            partes[0],
-                            partes[1],
-                            Double.parseDouble(partes[2]),
-                            (int) Double.parseDouble(partes[3])
-                    );
-                    p.stock = Integer.parseInt(partes[4]);
-                    p.lote = partes[5];
-                    p.validade = partes[6].isEmpty() ? null : LocalDate.parse(partes[6]);
-                    produtos.add(p);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return produtos;
-    }
-
-
     private void guardarProdutosCSV() {
         try (PrintWriter pw = new PrintWriter(CSV_FILE)) {
             for (int i = 0; i < modeloProdutos.size(); i++) {
                 Produto p = modeloProdutos.get(i);
-                pw.println(p.nome + "," + p.categoria + "," + p.preco + "," + p.desconto + "," +
-                        p.stock + "," + p.lote + "," + (p.validade != null ? p.validade : ""));
+                pw.println(p.getNome() + "," + p.getCategoria() + "," + p.getPreco() + "," +
+                        p.getPrecoCompra() + "," + p.getDesconto() + "," + p.getStock() + "," +
+                        p.getLote() + "," + (p.getValidade() != null ? p.getValidade() : ""));
             }
         } catch (Exception e) {
             e.printStackTrace();

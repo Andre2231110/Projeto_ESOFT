@@ -50,10 +50,10 @@ public class JanelaStock extends JFrame {
 
         for (Produto p : produtos) {
             modeloTabela.addRow(new Object[]{
-                    p.nome,
-                    p.stock,
-                    (p.validade != null) ? p.validade : "—",
-                    (p.lote != null && !p.lote.isEmpty()) ? p.lote : "—"
+                    p.getNome(),
+                    p.getStock(),
+                    (p.getValidade() != null) ? p.getValidade() : "—",
+                    (p.getLote() != null && !p.getLote().isEmpty()) ? p.getLote() : "—"
             });
         }
     }
@@ -82,17 +82,19 @@ public class JanelaStock extends JFrame {
 
         int resposta = JOptionPane.showConfirmDialog(
                 this,
-                "Tens a certeza que queres eliminar \"" + produto.nome + "\"?\n(Isto irá apagar o stock, validade e lote.)",
+                "Tens a certeza que queres eliminar \"" + produto.getNome() + "\"?\n(Isto irá apagar o stock, validade e lote.)",
                 "Confirmar Soft Delete",
                 JOptionPane.YES_NO_OPTION
         );
 
+
         if (resposta == JOptionPane.YES_OPTION) {
-            produto.stock = 0;
-            produto.validade = null;
-            produto.lote = "—";
+            produto.setStock(0);
+            produto.setValidade(null);
+            produto.setLote("—");
+        }
 
             atualizarTabela(); // reflete as mudanças na UI
-        }
+
     }
 }

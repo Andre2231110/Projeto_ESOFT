@@ -1,12 +1,10 @@
-
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-
-import  GestaoBar.Produto;
+import GestaoBar.Produto;
 
 public class JanelaEditarStock extends JDialog {
 
@@ -31,7 +29,7 @@ public class JanelaEditarStock extends JDialog {
         lblStock.setBounds(30, 30, 100, 25);
         add(lblStock);
 
-        txtStock = new JTextField(String.valueOf(produto.stock));
+        txtStock = new JTextField(String.valueOf(produto.getStock()));
         txtStock.setBounds(120, 30, 130, 25);
         add(txtStock);
 
@@ -40,7 +38,7 @@ public class JanelaEditarStock extends JDialog {
         add(lblValidade);
 
         txtValidade = new JTextField(
-                produto.validade != null ? produto.validade.toString() : ""
+                produto.getValidade() != null ? produto.getValidade().toString() : ""
         );
         txtValidade.setBounds(120, 70, 130, 25);
         add(txtValidade);
@@ -49,7 +47,7 @@ public class JanelaEditarStock extends JDialog {
         lblLote.setBounds(30, 110, 100, 25);
         add(lblLote);
 
-        txtLote = new JTextField(produto.lote);
+        txtLote = new JTextField(produto.getLote());
         txtLote.setBounds(120, 110, 130, 25);
         add(txtLote);
 
@@ -63,7 +61,6 @@ public class JanelaEditarStock extends JDialog {
 
         btnGuardar.addActionListener(e -> {
             try {
-                // Soft delete automático se tudo estiver vazio ou a zero
                 String stockInput = txtStock.getText().trim();
                 String validadeInput = txtValidade.getText().trim();
                 String loteInput = txtLote.getText().trim();
@@ -71,9 +68,9 @@ public class JanelaEditarStock extends JDialog {
                 if ((stockInput.isEmpty() || stockInput.equals("0")) &&
                         validadeInput.isEmpty() &&
                         loteInput.isEmpty()) {
-                    produto.stock = 0;
-                    produto.validade = null;
-                    produto.lote = "—";
+                    produto.setStock(0);
+                    produto.setValidade(null);
+                    produto.setLote("—");
                 } else {
                     int novoStock = Integer.parseInt(stockInput);
                     if (novoStock < 0) throw new NumberFormatException();
@@ -81,9 +78,9 @@ public class JanelaEditarStock extends JDialog {
                     LocalDate novaValidade = validadeInput.isEmpty() ? null : LocalDate.parse(validadeInput);
                     String novoLote = loteInput.isEmpty() ? "—" : loteInput;
 
-                    produto.stock = novoStock;
-                    produto.validade = novaValidade;
-                    produto.lote = novoLote;
+                    produto.setStock(novoStock);
+                    produto.setValidade(novaValidade);
+                    produto.setLote(novoLote);
                 }
 
                 guardarAlteracoesCSV(produto);
@@ -104,26 +101,27 @@ public class JanelaEditarStock extends JDialog {
 
     private void guardarAlteracoesCSV(Produto editado) throws IOException {
         File ficheiro = new File(CSV_FILE);
-        java.util.List<Produto> produtos = new ArrayList<>();
+        ArrayList<Produto> produtos = new ArrayList<>();
 
-        // Recarrega todos os produtos do CSV
+        // Recarrega os produtos existentes
         try (BufferedReader br = new BufferedReader(new FileReader(ficheiro))) {
             String linha;
             while ((linha = br.readLine()) != null) {
                 String[] partes = linha.split(",", -1);
-                if (partes.length >= 7) {
+                if (partes.length >= 8) {
                     Produto p = new Produto(
-                            partes[0],
-                            partes[1],
-                            Double.parseDouble(partes[2]),
-                            (int) Double.parseDouble(partes[3])
+                            partes[0], // nome
+                            partes[1], // categoria
+                            Double.parseDouble(partes[2]), // preco venda
+                            Double.parseDouble(partes[3]), // preco compra
+                            Integer.parseInt(partes[4])    // desconto
                     );
-                    p.stock = Integer.parseInt(partes[4]);
-                    p.lote = partes[5];
-                    p.validade = partes[6].isEmpty() ? null : LocalDate.parse(partes[6]);
+                    p.setStock(Integer.parseInt(partes[5]));
+                    p.setLote(partes[6]);
+                    p.setValidade(partes[7].isEmpty() ? null : LocalDate.parse(partes[7]));
 
-                    if (p.nome.equals(editado.nome)) {
-                        produtos.add(editado); // substitui o antigo
+                    if (p.getNome().equals(editado.getNome())) {
+                        produtos.add(editado);
                     } else {
                         produtos.add(p);
                     }
@@ -131,11 +129,12 @@ public class JanelaEditarStock extends JDialog {
             }
         }
 
-        // Regrava o CSV com as alterações
+        // Regrava os produtos atualizados
         try (PrintWriter pw = new PrintWriter(new FileWriter(ficheiro))) {
             for (Produto p : produtos) {
-                pw.println(p.nome + "," + p.categoria + "," + p.preco + "," + p.desconto + "," +
-                        p.stock + "," + p.lote + "," + (p.validade != null ? p.validade : ""));
+                pw.println(p.getNome() + "," + p.getCategoria() + "," + p.getPreco() + "," +
+                        p.getPrecoCompra() + "," + p.getDesconto() + "," + p.getStock() + "," +
+                        p.getLote() + "," + (p.getValidade() != null ? p.getValidade() : ""));
             }
         }
     }
