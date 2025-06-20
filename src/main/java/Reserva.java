@@ -1,14 +1,18 @@
+import java.util.Date;
+
 public class Reserva {
     private String responsavel;
     private String telefone;
     private int quantidadePessoas;
     private double precoPago;
+    private Date data;
 
-    public Reserva(String responsavel, String telefone, int quantidadePessoas, double precoPago) {
+    public Reserva(String responsavel, String telefone, int quantidadePessoas, double precoPago, Date data) {
         this.responsavel = responsavel;
         this.telefone = telefone;
         this.quantidadePessoas = quantidadePessoas;
         this.precoPago = precoPago;
+        this.data = data;
     }
 
     public String getResponsavel() {
@@ -41,6 +45,12 @@ public class Reserva {
 
     public void setPrecoPago(double precoPago) {
         this.precoPago = precoPago;
+    }
+    public Date getData() {
+        return data;
+    }
+    public void setData(Date data) {
+        this.data = data;
     }
 }
 

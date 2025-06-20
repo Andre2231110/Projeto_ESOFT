@@ -4,7 +4,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class JanelaSalas extends JFrame {
@@ -15,6 +17,8 @@ public class JanelaSalas extends JFrame {
     private JTextField txtLayout;
     private JComboBox<String> cmbSom;
     private JCheckBox chkAcessivel;
+    private JCheckBox chkInativa;
+    private JTextField txtPrecoCusto;
     private JTable tabelaSalas;
     private JButton btnAdicionar;
     private JButton btnEditar;
@@ -22,9 +26,7 @@ public class JanelaSalas extends JFrame {
     private JButton btnReservas;
     private JButton btnSair;
 
-
     private final String FICHEIRO_SALAS = "src/main/java/csv/salas.csv";
-
 
     private DefaultTableModel modeloTabela;
     private ArrayList<Sala> listaSalas;
@@ -51,6 +53,8 @@ public class JanelaSalas extends JFrame {
                 txtLayout.setText(salaSelecionada.getLayout());
                 cmbSom.setSelectedItem(salaSelecionada.getSom());
                 chkAcessivel.setSelected(salaSelecionada.isAcessivel());
+                chkInativa.setSelected(!salaSelecionada.isAtiva());
+                txtPrecoCusto.setText(String.valueOf(salaSelecionada.getPrecoCusto()));
             }
         });
         criarBotoes();
@@ -62,7 +66,7 @@ public class JanelaSalas extends JFrame {
     }
 
     private void criarFormulario() {
-        JPanel painelFormulario = new JPanel(new GridLayout(6, 2));
+        JPanel painelFormulario = new JPanel(new GridLayout(8, 2));
 
         painelFormulario.add(new JLabel("Nome da Sala:"));
         txtNome = new JTextField();
@@ -84,11 +88,19 @@ public class JanelaSalas extends JFrame {
         chkAcessivel = new JCheckBox();
         painelFormulario.add(chkAcessivel);
 
+        painelFormulario.add(new JLabel("Inativa:"));
+        chkInativa = new JCheckBox();
+        painelFormulario.add(chkInativa);
+
+        painelFormulario.add(new JLabel("Preço de Custo (€):"));
+        txtPrecoCusto = new JTextField();
+        painelFormulario.add(txtPrecoCusto);
+
         painelPrincipal.add(painelFormulario, BorderLayout.NORTH);
     }
 
     private void criarTabela() {
-        modeloTabela = new DefaultTableModel(new String[]{"Nome", "Tipo", "Layout", "Som", "Acessível"}, 0);
+        modeloTabela = new DefaultTableModel(new String[]{"Nome", "Tipo", "Layout", "Som", "Acessível", "Estado", "Preço Custo (€)"}, 0);
         tabelaSalas = new JTable(modeloTabela);
         painelPrincipal.add(new JScrollPane(tabelaSalas), BorderLayout.CENTER);
     }
@@ -102,24 +114,18 @@ public class JanelaSalas extends JFrame {
         btnSair = new JButton("Sair");
         btnReservas = new JButton("Reservas");
 
-
-
-
         painelBotoes.add(btnAdicionar);
         painelBotoes.add(btnEditar);
         painelBotoes.add(btnRemover);
         painelBotoes.add(btnReservas);
         painelBotoes.add(btnSair);
 
-
         painelPrincipal.add(painelBotoes, BorderLayout.SOUTH);
 
         btnAdicionar.addActionListener(e -> adicionarSala());
         btnEditar.addActionListener(e -> editarSala());
-        btnRemover.addActionListener(e -> removerSala());
+        btnRemover.addActionListener(e -> desativarSala());
         btnSair.addActionListener(e -> dispose());
-
-
         btnReservas.addActionListener(e -> abrirJanelaReservas());
     }
 
@@ -128,17 +134,16 @@ public class JanelaSalas extends JFrame {
 
         String nome = txtNome.getText().trim();
         String tipo = (String) cmbTipo.getSelectedItem();
-        String layout = txtLayout.getText().trim(); // ex: "10"
+        String layout = txtLayout.getText().trim();
         String som = (String) cmbSom.getSelectedItem();
         boolean acessivel = chkAcessivel.isSelected();
+        boolean ativa = !chkInativa.isSelected();
+        double precoCusto = Double.parseDouble(txtPrecoCusto.getText().trim());
 
-        Sala novaSala = new Sala(nome, tipo, layout, som, acessivel);
+        Sala novaSala = new Sala(nome, tipo, layout, som, acessivel, ativa, precoCusto);
         listaSalas.add(novaSala);
 
-        modeloTabela.addRow(new Object[]{
-                nome, tipo, layout + "x" + layout, som, acessivel ? "Sim" : "Não"
-        });
-
+        atualizarTabela();
         limparFormulario();
 
         JOptionPane.showMessageDialog(this,
@@ -148,7 +153,6 @@ public class JanelaSalas extends JFrame {
 
         guardarSalasEmCSV();
     }
-
 
     private void editarSala() {
         int linhaSelecionada = tabelaSalas.getSelectedRow();
@@ -164,6 +168,8 @@ public class JanelaSalas extends JFrame {
         String layout = txtLayout.getText().trim();
         String som = (String) cmbSom.getSelectedItem();
         boolean acessivel = chkAcessivel.isSelected();
+        boolean ativa = !chkInativa.isSelected();
+        double precoCusto = Double.parseDouble(txtPrecoCusto.getText().trim());
 
         Sala sala = listaSalas.get(linhaSelecionada);
         sala.setNome(nome);
@@ -171,13 +177,10 @@ public class JanelaSalas extends JFrame {
         sala.setLayout(layout);
         sala.setSom(som);
         sala.setAcessivel(acessivel);
+        sala.setAtiva(ativa);
+        sala.setPrecoCusto(precoCusto);
 
-        modeloTabela.setValueAt(nome, linhaSelecionada, 0);
-        modeloTabela.setValueAt(tipo, linhaSelecionada, 1);
-        modeloTabela.setValueAt(layout + "x" + layout, linhaSelecionada, 2);
-        modeloTabela.setValueAt(som, linhaSelecionada, 3);
-        modeloTabela.setValueAt(acessivel ? "Sim" : "Não", linhaSelecionada, 4);
-
+        atualizarTabela();
         limparFormulario();
 
         JOptionPane.showMessageDialog(this,
@@ -188,34 +191,25 @@ public class JanelaSalas extends JFrame {
         guardarSalasEmCSV();
     }
 
-
-    private void removerSala() {
+    private void desativarSala() {
         int linhaSelecionada = tabelaSalas.getSelectedRow();
         if (linhaSelecionada == -1) {
             JOptionPane.showMessageDialog(this,
-                    "Não foi selecionada nenhuma sala para remover.",
+                    "Não foi selecionada nenhuma sala.",
                     "Aviso",
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
-        int opcao = JOptionPane.showConfirmDialog(this,
-                "Tens a certeza que queres remover esta sala?",
-                "Confirmação",
-                JOptionPane.YES_NO_OPTION);
 
-        if (opcao != JOptionPane.YES_OPTION) return;
-        if (linhaSelecionada == -1) return;
-
-        listaSalas.remove(linhaSelecionada);
-        modeloTabela.removeRow(linhaSelecionada);
-        limparFormulario();
+        Sala sala = listaSalas.get(linhaSelecionada);
+        sala.setAtiva(false);
+        atualizarTabela();
+        guardarSalasEmCSV();
 
         JOptionPane.showMessageDialog(this,
-                "Sala removida com sucesso!",
+                "Sala marcada como inativa com sucesso!",
                 "Sucesso",
                 JOptionPane.INFORMATION_MESSAGE);
-
-        guardarSalasEmCSV();
     }
 
     private void limparFormulario() {
@@ -224,33 +218,30 @@ public class JanelaSalas extends JFrame {
         txtLayout.setText("");
         cmbSom.setSelectedIndex(0);
         chkAcessivel.setSelected(false);
+        chkInativa.setSelected(false);
+        txtPrecoCusto.setText("");
     }
-
-
 
     private void carregarSalasDeCSV() {
         File ficheiro = new File(FICHEIRO_SALAS);
-        if (!ficheiro.exists()) {
-            // Se o ficheiro ainda não existir, nada é carregado (primeira execução, por exemplo)
-            return;
-        }
+        if (!ficheiro.exists()) return;
 
         try (Scanner scanner = new Scanner(ficheiro)) {
-            listaSalas.clear(); // limpar antes
-            // ignorar cabeçalho
-
+            listaSalas.clear();
             while (scanner.hasNextLine()) {
                 String linha = scanner.nextLine();
                 String[] partes = linha.split(",");
 
-                if (partes.length == 5) {
+                if (partes.length == 7) {
                     String nome = partes[0];
                     String tipo = partes[1];
-                    String layout = partes[2].split("x")[0]; // ex: "10x10" → "10"
+                    String layout = partes[2].split("x")[0];
                     String som = partes[3];
-                    boolean acessivel = partes[4].equalsIgnoreCase("Sim");
+                    boolean acessivel = partes[4].equals("1");
+                    boolean ativa = partes[5].equals("1");
+                    double preco = Double.parseDouble(partes[6]);
 
-                    Sala sala = new Sala(nome, tipo, layout, som, acessivel);
+                    Sala sala = new Sala(nome, tipo, layout, som, acessivel, ativa, preco);
                     listaSalas.add(sala);
                 }
             }
@@ -265,17 +256,16 @@ public class JanelaSalas extends JFrame {
     private void guardarSalasEmCSV() {
         try {
             File ficheiro = new File(FICHEIRO_SALAS);
-
             try (PrintWriter writer = new PrintWriter(ficheiro)) {
-
-
                 for (Sala sala : listaSalas) {
-                    writer.printf("%s,%s,%sx%s,%s,%s%n",
+                    writer.printf(Locale.US, "%s,%s,%sx%s,%s,%s,%s,%.2f%n",
                             sala.getNome(),
                             sala.getTipo(),
                             sala.getLayout(), sala.getLayout(),
                             sala.getSom(),
-                            sala.isAcessivel() ? "1" : "0");
+                            sala.isAcessivel() ? "1" : "0",
+                            sala.isAtiva() ? "1" : "0",
+                            sala.getPrecoCusto());
                 }
             }
         } catch (Exception e) {
@@ -287,25 +277,26 @@ public class JanelaSalas extends JFrame {
     }
 
     private void atualizarTabela() {
-        modeloTabela.setRowCount(0); // limpa a tabela
+        modeloTabela.setRowCount(0);
         for (Sala sala : listaSalas) {
             modeloTabela.addRow(new Object[]{
                     sala.getNome(),
                     sala.getTipo(),
                     sala.getLayout() + "x" + sala.getLayout(),
                     sala.getSom(),
-                    sala.isAcessivel() ? "Sim" : "Não"
+                    sala.isAcessivel() ? "Sim" : "Não",
+                    sala.isAtiva() ? "Ativa" : "Inativa",
+                    String.format("%.2f", sala.getPrecoCusto())
             });
         }
     }
 
-
-
     private boolean dadosValidos() {
         String nome = txtNome.getText().trim();
         String layoutTexto = txtLayout.getText().trim();
+        String precoTexto = txtPrecoCusto.getText().trim();
 
-        if (nome.isEmpty() || layoutTexto.isEmpty()) {
+        if (nome.isEmpty() || layoutTexto.isEmpty() || precoTexto.isEmpty()) {
             JOptionPane.showMessageDialog(this,
                     "Por favor preencha todos os campos obrigatórios.",
                     "Campos inválidos",
@@ -313,7 +304,6 @@ public class JanelaSalas extends JFrame {
             return false;
         }
 
-        // Verificar se o layout é um número válido
         try {
             int layout = Integer.parseInt(layoutTexto);
             if (layout < 1) {
@@ -323,16 +313,29 @@ public class JanelaSalas extends JFrame {
                         JOptionPane.ERROR_MESSAGE);
                 return false;
             }
+
+            double preco = Double.parseDouble(precoTexto.replace(",", "."));
+            if (preco < 0) {
+                JOptionPane.showMessageDialog(this,
+                        "O preço de custo deve ser um número positivo.",
+                        "Preço inválido",
+                        JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this,
-                    "O layout deve ser um número (ex: 10 para 10x10).",
-                    "Layout inválido",
+                    "O layout e o preço devem ser números válidos.",
+                    "Campos inválidos",
                     JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
         return true;
     }
+
+
+
 
     private void abrirJanelaReservas() {
         int linhaSelecionada = tabelaSalas.getSelectedRow();
@@ -345,8 +348,6 @@ public class JanelaSalas extends JFrame {
         }
 
         Sala salaSelecionada = listaSalas.get(linhaSelecionada);
-        new JanelaReservas(this, salaSelecionada); // nova janela
+        new JanelaReservas(this, salaSelecionada);
     }
-
 }
-
