@@ -59,10 +59,12 @@ public class JanelaVendasBar extends JFrame {
 
         backButton.addActionListener(e -> {
             List<Filme> filmes = JanelaFilmes.chamarFilmesCSV();
-            List<Sessao> sessoes = JanelaVendaSessoes.carregarSessoesCSV(filmes);
+            List<Sala> salas = JanelaVendaSessoes.carregarSalasCSV();
+            List<Sessao> sessoes = JanelaVendaSessoes.carregarSessoesCSV(filmes, salas);
             new JanelaVendaSessoes(filme, nomeUser, sessoes);
             dispose();
         });
+
 
 
         confirmarButton.addActionListener(e -> {
@@ -102,7 +104,7 @@ public class JanelaVendasBar extends JFrame {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String linha;
             while ((linha = br.readLine()) != null) {
-                String[] partes = linha.split(";");
+                String[] partes = linha.split(",");
                 if (partes.length < 3) continue;
 
                 String nome = partes[0];
@@ -216,11 +218,22 @@ public class JanelaVendasBar extends JFrame {
             int qnt = lugaresSelecionados.size();
             double precoBilhete = 5.00;
             double total = qnt * precoBilhete;
-            pw.println(filme.getTitulo() + ";" + qnt + ";" + String.format("%.2f", total).replace(",", "."));
+
+            String linha = String.join(";",
+                    filme.getTitulo(),
+                    sessao.getHoraInicio() + " → " + sessao.getHoraFim(),
+                    sessao.getSala().getNome(),
+                    String.valueOf(qnt),
+                    String.format("%.2f", total).replace(",", ".")
+            );
+
+            pw.println(linha);
+
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Erro ao guardar vendas de bilhetes: " + e.getMessage());
         }
     }
+
 
     private void guardarVendaUtilizador() {
         double total = 0;

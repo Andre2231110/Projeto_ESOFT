@@ -162,11 +162,11 @@ public class JanelaCampanhas extends JFrame {
     private void guardarCampanhasCSV() {
         try (PrintWriter writer = new PrintWriter(new FileWriter(FICHEIRO_CSV))) {
             for (Campanhas c : listaCampanhas) {
-                writer.println(c.getNome() + ";" +
-                        c.getPublicoAlvo() + ";" +
-                        c.getPromocao() + ";" +
-                        c.getFilmesAssociados() + ";" +
-                        c.getPreco() + ";" +
+                writer.println(c.getNome() + "," +
+                        c.getPublicoAlvo() + "," +
+                        c.getPromocao() + "," +
+                        c.getFilmesAssociados() + "," +
+                        c.getPreco() + "," +
                         c.isAtiva());
             }
         } catch (IOException e) {
@@ -181,7 +181,7 @@ public class JanelaCampanhas extends JFrame {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String linha;
             while ((linha = reader.readLine()) != null) {
-                String[] partes = linha.split(";");
+                String[] partes = linha.split(",");
                 if (partes.length == 6) {
                     String nome = partes[0];
                     String publico = partes[1];

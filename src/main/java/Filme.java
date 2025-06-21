@@ -7,7 +7,6 @@ public class Filme {
     private double precoLicenca;
     private double precoBilhete;
 
-    // Construtor
     public Filme(String titulo, int duracao, String sinopse, String genero, String imagem,
                  double precoLicenca, double precoBilhete) {
         this.titulo = titulo;
@@ -19,7 +18,6 @@ public class Filme {
         this.precoBilhete = precoBilhete;
     }
 
-    // Getters
     public String getTitulo() {
         return titulo;
     }
@@ -48,7 +46,6 @@ public class Filme {
         return precoBilhete;
     }
 
-    // Setters
     public void setTitulo(String titulo) {
         this.titulo = titulo;
     }
@@ -77,7 +74,6 @@ public class Filme {
         this.precoBilhete = precoBilhete;
     }
 
-    // Método para construir Filme a partir de CSV
     public static Filme fromCSV(String linha) {
         String[] partes = linha.split(";");
         if (partes.length < 7) return null;
@@ -93,7 +89,6 @@ public class Filme {
         return new Filme(titulo, duracao, sinopse, genero, imagem, precoLicenca, precoBilhete);
     }
 
-    // Método para exportar para CSV
     public String toCSV() {
         return titulo + ";" + duracao + ";" + sinopse + ";" + genero + ";" +
                 imagem + ";" + precoLicenca + ";" + precoBilhete;

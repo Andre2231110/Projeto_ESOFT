@@ -95,9 +95,23 @@ public class JanelaVendaSessoes extends JFrame {
 
     private void gerarMapaDeLugares() {
         painelLugares.removeAll();
-        painelLugares.setLayout(new GridLayout(5, 5, 5, 5));
+        botoesLugares.clear();
 
-        for (int i = 1; i <= 25; i++) {
+        if (sessaoSelecionada == null || sessaoSelecionada.getSala() == null) {
+            painelLugares.revalidate();
+            painelLugares.repaint();
+            return;
+        }
+
+        Sala sala = sessaoSelecionada.getSala();
+        int[] dimensoes = sala.getLinhasEColunas();
+        int linhas = dimensoes[0];
+        int colunas = dimensoes[1];
+        int total = linhas * colunas;
+
+        painelLugares.setLayout(new GridLayout(linhas, colunas, 5, 5));
+
+        for (int i = 1; i <= total; i++) {
             JToggleButton lugar = new JToggleButton(String.valueOf(i));
             lugar.setBackground(Color.LIGHT_GRAY);
             botoesLugares.add(lugar);
@@ -108,16 +122,17 @@ public class JanelaVendaSessoes extends JFrame {
         painelLugares.repaint();
     }
 
+
     private void configurarBotoesSessoesDinamico() {
         painelSessoes.removeAll();
 
         for (Sessao s : sessoes) {
             if (!s.getFilme().getTitulo().equalsIgnoreCase(filme.getTitulo())) continue;
 
-            String texto = s.getHoraInicio() + " → " + s.getHoraFim();
+            String texto = s.getHoraInicio() + " → " + s.getHoraFim() + " | Sala: " + s.getSala().getNome();
             JButton btn = new JButton(texto);
             btn.setBackground(new Color(204, 255, 204));
-            btn.setPreferredSize(new Dimension(120, 30));
+            btn.setPreferredSize(new Dimension(180, 30));
 
             btn.addActionListener(e -> {
                 for (Component c : painelSessoes.getComponents()) {
@@ -127,7 +142,9 @@ public class JanelaVendaSessoes extends JFrame {
                 }
                 btn.setBackground(Color.GREEN);
                 sessaoSelecionada = s;
+                gerarMapaDeLugares();
             });
+
 
             painelSessoes.add(btn);
         }
@@ -136,20 +153,47 @@ public class JanelaVendaSessoes extends JFrame {
         painelSessoes.repaint();
     }
 
-
-
-    public static List<Sessao> carregarSessoesCSV(List<Filme> filmes) {
+    public static List<Sessao> carregarSessoesCSV(List<Filme> filmes, List<Sala> salas) {
         List<Sessao> lista = new ArrayList<>();
         File ficheiro = new File("src/main/java/csv/sessoes.csv");
 
         try (BufferedReader br = new BufferedReader(new FileReader(ficheiro))) {
             String linha;
             while ((linha = br.readLine()) != null) {
-                Sessao s = Sessao.fromCSV(linha, filmes);
+                Sessao s = Sessao.fromCSV(linha, filmes, salas);
                 if (s != null) lista.add(s);
             }
         } catch (IOException e) {
             System.err.println("Erro ao ler sessões: " + e.getMessage());
+        }
+
+        return lista;
+    }
+
+    public static List<Sala> carregarSalasCSV() {
+        List<Sala> lista = new ArrayList<>();
+        File ficheiro = new File("src/main/java/csv/salas.csv");
+
+        if (!ficheiro.exists()) return lista;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(ficheiro))) {
+            String linha;
+            while ((linha = br.readLine()) != null) {
+                String[] partes = linha.split(",");
+                if (partes.length >= 7) {
+                    String nome = partes[0];
+                    String tipo = partes[1];
+                    String layout = partes[2].trim();
+                    String som = partes[3];
+                    boolean acessivel = partes[4].equals("1");
+                    boolean ativa = partes[5].equals("1");
+                    double preco = Double.parseDouble(partes[6]);
+
+                    lista.add(new Sala(nome, tipo, layout, som, acessivel, ativa, preco));
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Erro ao ler salas: " + e.getMessage());
         }
 
         return lista;

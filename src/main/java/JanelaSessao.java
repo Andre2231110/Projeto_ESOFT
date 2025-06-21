@@ -16,12 +16,16 @@ public class JanelaSessao extends JFrame {
     private DefaultListModel<String> modeloSessoes;
     private List<Sessao> sessoes;
 
+    private List<Sala> salas;
+
     private JTextField txtData;
     private static final String FICHEIRO_FILMES = "src/main/java/csv/Filmes.csv";
     private static final String FICHEIRO_SESSOES = "src/main/java/csv/sessoes.csv";
+    private static final String FICHEIRO_SALAS = "src/main/java/csv/salas.csv";
 
     public JanelaSessao() {
         this.filmes = carregarFilmesDeCSV();
+        this.salas = carregarSalasDeCSV();
         this.sessoes = new ArrayList<>();
 
         setTitle("Sessões");
@@ -121,7 +125,7 @@ public class JanelaSessao extends JFrame {
                 return;
             }
             Filme filmeSelecionado = filmes.get(index);
-            JanelaAdicionarSessao janela = new JanelaAdicionarSessao(this, filmeSelecionado);
+            JanelaAdicionarSessao janela = new JanelaAdicionarSessao(this, filmeSelecionado, salas);
             Sessao nova = janela.getSessaoCriada();
             if (nova != null) {
                 sessoes.add(nova);
@@ -130,6 +134,7 @@ public class JanelaSessao extends JFrame {
             }
         });
 
+        // 🔁 EDITAR sessão (com suporte à sala)
         btnEditar.addActionListener(e -> {
             int indexFilme = listaFilmes.getSelectedIndex();
             int indexSessao = listaSessoes.getSelectedIndex();
@@ -140,6 +145,7 @@ public class JanelaSessao extends JFrame {
 
             Filme filmeSelecionado = filmes.get(indexFilme);
             String dataSelecionada = txtData.getText().trim();
+
             List<Sessao> sessoesDoFilme = new ArrayList<>();
             for (Sessao s : sessoes) {
                 if (s.getFilme().getTitulo().equalsIgnoreCase(filmeSelecionado.getTitulo()) &&
@@ -149,8 +155,10 @@ public class JanelaSessao extends JFrame {
             }
 
             Sessao sessaoSelecionada = sessoesDoFilme.get(indexSessao);
-            JanelaEditarSessao janelaEditar = new JanelaEditarSessao(this, sessaoSelecionada);
+
+            JanelaEditarSessao janelaEditar = new JanelaEditarSessao(this, sessaoSelecionada, salas);
             Sessao sessaoEditada = janelaEditar.getSessaoEditada();
+
             if (sessaoEditada != null) {
                 sessoes.remove(sessaoSelecionada);
                 sessoes.add(sessaoEditada);
@@ -174,7 +182,7 @@ public class JanelaSessao extends JFrame {
         for (Sessao s : sessoes) {
             if (s.getFilme().getTitulo().equalsIgnoreCase(filmeSelecionado.getTitulo()) &&
                     s.getData().equals(dataSelecionada)) {
-                modeloSessoes.addElement(s.getHoraInicio() + " → " + s.getHoraFim());
+                modeloSessoes.addElement(s.getHoraInicio() + " → " + s.getHoraFim() + " [" + s.getSala().getNome() + "]");
             }
         }
     }
@@ -186,7 +194,7 @@ public class JanelaSessao extends JFrame {
         try (BufferedReader br = new BufferedReader(new FileReader(ficheiro))) {
             String linha;
             while ((linha = br.readLine()) != null) {
-                Sessao s = Sessao.fromCSV(linha, filmes);
+                Sessao s = Sessao.fromCSV(linha, filmes, salas);
                 if (s != null) sessoes.add(s);
             }
         } catch (IOException e) {
@@ -227,6 +235,34 @@ public class JanelaSessao extends JFrame {
             }
         } catch (IOException | NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Erro ao ler o ficheiro de filmes.");
+        }
+
+        return lista;
+    }
+
+    private List<Sala> carregarSalasDeCSV() {
+        List<Sala> lista = new ArrayList<>();
+        File ficheiro = new File(FICHEIRO_SALAS);
+        if (!ficheiro.exists()) return lista;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(ficheiro))) {
+            String linha;
+            while ((linha = br.readLine()) != null) {
+                String[] partes = linha.split(",");
+                if (partes.length >= 7) {
+                    String nome = partes[0];
+                    String tipo = partes[1];
+                    String layout = partes[2].split("x")[0];
+                    String som = partes[3];
+                    boolean acessivel = partes[4].equals("1");
+                    boolean ativa = partes[5].equals("1");
+                    double preco = Double.parseDouble(partes[6]);
+
+                    lista.add(new Sala(nome, tipo, layout, som, acessivel, ativa, preco));
+                }
+            }
+        } catch (IOException | NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao ler o ficheiro de salas.");
         }
 
         return lista;
