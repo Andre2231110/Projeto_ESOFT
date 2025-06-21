@@ -59,7 +59,6 @@ public class JanelaVendasBar extends JFrame {
 
         backButton.addActionListener(e -> {
             List<Filme> filmes = JanelaFilmes.chamarFilmesCSV();
-            List<Filme> filmes = JanelaFilmes.chamarFilmesCSV();
             List<Sessao> sessoes = JanelaVendaSessoes.carregarSessoesCSV(filmes);
             new JanelaVendaSessoes(filme, nomeUser, sessoes);
             dispose();

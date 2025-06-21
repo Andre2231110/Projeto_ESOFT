@@ -115,6 +115,7 @@ public class JanelaBar extends JFrame {
         btnHistorico.setBackground(Color.RED);
         btnHistorico.setForeground(Color.WHITE);
         add(btnHistorico);
+        btnHistorico.addActionListener(e -> new JanelaHistoricoVendas());
 
         listaDeProdutos = new ArrayList<>();
         listaProdutos.addListSelectionListener(e -> {
