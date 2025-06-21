@@ -38,7 +38,11 @@ public class JanelaPrincipal extends JFrame {
         });
 
         btnVendaBilhetes.addActionListener(e -> JOptionPane.showMessageDialog(this, "Ainda por implementar"));
-        btnSessoes.addActionListener(e -> JOptionPane.showMessageDialog(this, "Ainda por implementar"));
+        btnSessoes.addActionListener(e -> {
+            new JanelaSessao();
+            dispose();
+        });
+
         btnSalas.addActionListener(e -> {
             new JanelaSalas();
 

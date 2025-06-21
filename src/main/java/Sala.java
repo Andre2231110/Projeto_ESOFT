@@ -5,13 +5,17 @@ public class Sala {
     private String layout;
     private String som;
     private boolean acessivel;
+    private boolean ativa;
+    private double precoCusto;
 
-    public Sala(String nome, String tipo, String layout, String som, boolean acessivel) {
+    public Sala(String nome, String tipo, String layout, String som, boolean acessivel, boolean ativa, double precoCusto) {
         this.nome = nome;
         this.tipo = tipo;
         this.layout = layout;
         this.som = som;
         this.acessivel = acessivel;
+        this.ativa = ativa;
+        this.precoCusto = precoCusto;
     }
 
     public String getNome() {
@@ -52,5 +56,21 @@ public class Sala {
 
     public void setAcessivel(boolean acessivel) {
         this.acessivel = acessivel;
+    }
+
+    public boolean isAtiva() {
+        return ativa;
+    }
+
+    public void setAtiva(boolean ativa) {
+        this.ativa = ativa;
+    }
+
+    public double getPrecoCusto() {
+        return precoCusto;
+    }
+
+    public void setPrecoCusto(double precoCusto) {
+        this.precoCusto = precoCusto;
     }
 }

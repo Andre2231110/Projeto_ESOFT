@@ -8,6 +8,7 @@ public class JanelaAdicionarProduto extends JDialog {
     private JTextField txtNome;
     private JTextField txtCategoria;
     private JTextField txtPreco;
+    private JTextField txtPrecoCompra; // NOVO
     private JTextField txtDesconto;
     private JButton btnAdicionar;
     private JButton btnCancelar;
@@ -18,7 +19,7 @@ public class JanelaAdicionarProduto extends JDialog {
 
     public JanelaAdicionarProduto(JFrame parent) {
         super(parent, "Adicionar Produto", true);
-        setSize(400, 300);
+        setSize(400, 350);
         setLocationRelativeTo(parent);
         setLayout(null);
 
@@ -36,26 +37,33 @@ public class JanelaAdicionarProduto extends JDialog {
         txtCategoria.setBounds(150, 70, 200, 25);
         add(txtCategoria);
 
-        JLabel lblPreco = new JLabel("Preço (€):");
-        lblPreco.setBounds(30, 110, 100, 25);
+        JLabel lblPreco = new JLabel("Preço Venda (€):");
+        lblPreco.setBounds(30, 110, 120, 25);
         add(lblPreco);
         txtPreco = new JTextField();
         txtPreco.setBounds(150, 110, 200, 25);
         add(txtPreco);
 
+        JLabel lblPrecoCompra = new JLabel("Preço Compra (€):"); // NOVO
+        lblPrecoCompra.setBounds(30, 150, 120, 25);
+        add(lblPrecoCompra);
+        txtPrecoCompra = new JTextField(); // NOVO
+        txtPrecoCompra.setBounds(150, 150, 200, 25);
+        add(txtPrecoCompra);
+
         JLabel lblDesconto = new JLabel("Desconto (%):");
-        lblDesconto.setBounds(30, 150, 100, 25);
+        lblDesconto.setBounds(30, 190, 100, 25);
         add(lblDesconto);
         txtDesconto = new JTextField();
-        txtDesconto.setBounds(150, 150, 200, 25);
+        txtDesconto.setBounds(150, 190, 200, 25);
         add(txtDesconto);
 
         btnAdicionar = new JButton("Adicionar");
-        btnAdicionar.setBounds(80, 200, 100, 30);
+        btnAdicionar.setBounds(80, 240, 100, 30);
         add(btnAdicionar);
 
         btnCancelar = new JButton("Cancelar");
-        btnCancelar.setBounds(200, 200, 100, 30);
+        btnCancelar.setBounds(200, 240, 100, 30);
         add(btnCancelar);
 
         btnAdicionar.addActionListener(e -> {
@@ -63,18 +71,16 @@ public class JanelaAdicionarProduto extends JDialog {
                 String nome = txtNome.getText().trim();
                 String categoria = txtCategoria.getText().trim();
                 double preco = Double.parseDouble(txtPreco.getText().trim());
+                double precoCompra = Double.parseDouble(txtPrecoCompra.getText().trim()); // NOVO
                 int desconto = Integer.parseInt(txtDesconto.getText().trim());
 
-                // Criação do produto com os campos essenciais
-                produtoCriado = new Produto(nome, categoria, preco, desconto);
+                // Criar produto com o novo campo
+                produtoCriado = new Produto(nome, categoria, preco, precoCompra, desconto);
 
-                // Guardar no CSV
                 guardarProdutoCSV(produtoCriado);
-
-                // Fechar a janela
                 dispose();
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Insere valores válidos para preço e desconto.");
+                JOptionPane.showMessageDialog(this, "Insere valores válidos para preço, preço de compra e desconto.");
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Erro ao guardar o produto: " + ex.getMessage());
                 ex.printStackTrace();
@@ -90,8 +96,10 @@ public class JanelaAdicionarProduto extends JDialog {
 
     private void guardarProdutoCSV(Produto p) throws Exception {
         try (PrintWriter pw = new PrintWriter(new FileWriter(CSV_FILE, true))) {
-            pw.println(p.nome + "," + p.categoria + "," + p.preco + "," + p.desconto + "," +
-                    p.stock + "," + p.lote + "," + (p.validade != null ? p.validade : ""));
+            pw.println(p.getNome() + "," + p.getCategoria() + "," + p.getPreco() + "," +
+                    p.getPrecoCompra() + "," + p.getDesconto() + "," +
+                    p.getStock() + "," + p.getLote() + "," +
+                    (p.getValidade() != null ? p.getValidade() : ""));
         }
     }
 }

@@ -22,7 +22,7 @@ public class JanelaEliminarProduto extends JDialog {
 
         modeloLista = new DefaultListModel<>();
         for (Produto p : produtos) {
-            modeloLista.addElement(p.nome);
+            modeloLista.addElement(p.getNome());
         }
 
         lista = new JList<>(modeloLista);
@@ -43,12 +43,12 @@ public class JanelaEliminarProduto extends JDialog {
             if (index != -1) {
                 produtoSelecionado = produtos.get(index);
                 int resposta = JOptionPane.showConfirmDialog(this,
-                        "Tens a certeza que queres eliminar o produto \"" + produtoSelecionado.nome + "\"?",
+                        "Tens a certeza que queres eliminar o produto \"" + produtoSelecionado.getNome() + "\"?",
                         "Confirmação", JOptionPane.YES_NO_OPTION);
                 if (resposta == JOptionPane.YES_OPTION) {
                     try {
                         eliminarProdutoCSV(produtoSelecionado);
-                        produtos.remove(index); // também remove da lista em memória
+                        produtos.remove(index); // remove da lista em memória
                         modeloLista.remove(index); // remove da UI
                         JOptionPane.showMessageDialog(this, "Produto eliminado com sucesso.");
                         produtoSelecionado = null;
@@ -82,18 +82,20 @@ public class JanelaEliminarProduto extends JDialog {
             String linha;
             while ((linha = br.readLine()) != null) {
                 String[] partes = linha.split(",", -1);
-                if (partes.length >= 7) {
+                if (partes.length >= 8) {
                     Produto p = new Produto(
-                            partes[0],
-                            partes[1],
-                            Double.parseDouble(partes[2]),
-                            (int) Double.parseDouble(partes[3])
+                            partes[0], // nome
+                            partes[1], // categoria
+                            Double.parseDouble(partes[2]), // preco
+                            Double.parseDouble(partes[3]), // precoCompra
+                            Integer.parseInt(partes[4])    // desconto
                     );
-                    p.stock = Integer.parseInt(partes[4]);
-                    p.lote = partes[5];
-                    p.validade = partes[6].isEmpty() ? null : LocalDate.parse(partes[6]);
+                    p.setStock(Integer.parseInt(partes[5]));
+                    p.setLote(partes[6]);
+                    p.setValidade(partes[7].isEmpty() ? null : LocalDate.parse(partes[7]));
 
-                    if (!p.nome.equals(aEliminar.nome)) {
+                    // Só adiciona se não for o produto a eliminar
+                    if (!p.getNome().equals(aEliminar.getNome())) {
                         produtosAtualizados.add(p);
                     }
                 }
@@ -103,8 +105,9 @@ public class JanelaEliminarProduto extends JDialog {
         // Reescrever sem o produto eliminado
         try (PrintWriter pw = new PrintWriter(new FileWriter(ficheiro))) {
             for (Produto p : produtosAtualizados) {
-                pw.println(p.nome + "," + p.categoria + "," + p.preco + "," + p.desconto + "," +
-                        p.stock + "," + p.lote + "," + (p.validade != null ? p.validade : ""));
+                pw.println(p.getNome() + "," + p.getCategoria() + "," + p.getPreco() + "," +
+                        p.getPrecoCompra() + "," + p.getDesconto() + "," + p.getStock() + "," +
+                        p.getLote() + "," + (p.getValidade() != null ? p.getValidade() : ""));
             }
         }
     }

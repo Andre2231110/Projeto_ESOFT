@@ -9,6 +9,7 @@ public class JanelaEditarProduto extends JDialog {
     private JTextField txtNome;
     private JTextField txtCategoria;
     private JTextField txtPreco;
+    private JTextField txtPrecoCompra;
     private JTextField txtDesconto;
     private JButton btnGuardar;
     private JButton btnCancelar;
@@ -18,7 +19,7 @@ public class JanelaEditarProduto extends JDialog {
 
     public JanelaEditarProduto(JFrame parent, Produto produto) {
         super(parent, "Editar Produto", true);
-        setSize(400, 300);
+        setSize(400, 360);
         setLocationRelativeTo(parent);
         setLayout(null);
 
@@ -36,26 +37,33 @@ public class JanelaEditarProduto extends JDialog {
         txtCategoria.setBounds(150, 70, 200, 25);
         add(txtCategoria);
 
-        JLabel lblPreco = new JLabel("Preço:");
+        JLabel lblPreco = new JLabel("Preço Venda:");
         lblPreco.setBounds(30, 110, 100, 25);
         add(lblPreco);
         txtPreco = new JTextField(String.valueOf(produto.getPreco()));
         txtPreco.setBounds(150, 110, 200, 25);
         add(txtPreco);
 
-        JLabel lblDesconto = new JLabel("Desconto:");
-        lblDesconto.setBounds(30, 150, 100, 25);
+        JLabel lblPrecoCompra = new JLabel("Preço Compra:");
+        lblPrecoCompra.setBounds(30, 150, 100, 25);
+        add(lblPrecoCompra);
+        txtPrecoCompra = new JTextField(String.valueOf(produto.getPrecoCompra()));
+        txtPrecoCompra.setBounds(150, 150, 200, 25);
+        add(txtPrecoCompra);
+
+        JLabel lblDesconto = new JLabel("Desconto (%):");
+        lblDesconto.setBounds(30, 190, 100, 25);
         add(lblDesconto);
         txtDesconto = new JTextField(String.valueOf(produto.getDesconto()));
-        txtDesconto.setBounds(150, 150, 200, 25);
+        txtDesconto.setBounds(150, 190, 200, 25);
         add(txtDesconto);
 
         btnGuardar = new JButton("Guardar");
-        btnGuardar.setBounds(80, 200, 100, 30);
+        btnGuardar.setBounds(80, 250, 100, 30);
         add(btnGuardar);
 
         btnCancelar = new JButton("Cancelar");
-        btnCancelar.setBounds(200, 200, 100, 30);
+        btnCancelar.setBounds(200, 250, 100, 30);
         add(btnCancelar);
 
         btnGuardar.addActionListener(e -> {
@@ -63,26 +71,27 @@ public class JanelaEditarProduto extends JDialog {
                 String nome = txtNome.getText();
                 String categoria = txtCategoria.getText();
                 double preco = Double.parseDouble(txtPreco.getText());
-                double desconto = Double.parseDouble(txtDesconto.getText()); // assumindo double
+                double precoCompra = Double.parseDouble(txtPrecoCompra.getText());
+                int desconto = Integer.parseInt(txtDesconto.getText());
 
                 if (nome.isEmpty() || categoria.isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Preenche todos os campos.");
                     return;
                 }
 
-                // Atualiza os dados no objeto original
+                // Atualizar o objeto original
                 produto.setNome(nome);
                 produto.setCategoria(categoria);
                 produto.setPreco(preco);
-                produto.setDesconto((int) desconto);
+                produto.setPrecoCompra(precoCompra);
+                produto.setDesconto(desconto);
 
-                // Atualiza o ficheiro CSV
                 atualizarProdutoCSV(produto);
 
                 produtoEditado = produto;
                 dispose();
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Preço ou desconto inválidos.");
+                JOptionPane.showMessageDialog(this, "Erro: Introduz valores numéricos válidos.");
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Erro ao guardar no ficheiro.");
                 ex.printStackTrace();
@@ -100,23 +109,24 @@ public class JanelaEditarProduto extends JDialog {
         File ficheiro = new File(CSV_FILE);
         ArrayList<Produto> produtos = new ArrayList<>();
 
-        // Ler todos os produtos do CSV
+        // Leitura do CSV
         try (BufferedReader br = new BufferedReader(new FileReader(ficheiro))) {
             String linha;
             while ((linha = br.readLine()) != null) {
                 String[] partes = linha.split(",", -1);
-                if (partes.length >= 7) {
+                if (partes.length >= 8) {
                     Produto p = new Produto(
-                            partes[0],
-                            partes[1],
-                            Double.parseDouble(partes[2]),
-                            (int) Double.parseDouble(partes[3])
+                            partes[0], // nome
+                            partes[1], // categoria
+                            Double.parseDouble(partes[2]), // preco venda
+                            Double.parseDouble(partes[3]), // preco compra
+                            Integer.parseInt(partes[4])    // desconto
                     );
-                    p.stock = Integer.parseInt(partes[4]);
-                    p.lote = partes[5];
-                    p.validade = partes[6].isEmpty() ? null : LocalDate.parse(partes[6]);
+                    p.setStock(Integer.parseInt(partes[5]));
+                    p.setLote(partes[6]);
+                    p.setValidade(partes[7].isEmpty() ? null : LocalDate.parse(partes[7]));
 
-                    // Substituir se for o produto que foi editado
+
                     if (p.getNome().equals(produtoEditado.getNome())) {
                         produtos.add(produtoEditado);
                     } else {
@@ -126,11 +136,12 @@ public class JanelaEditarProduto extends JDialog {
             }
         }
 
-        // Reescrever o ficheiro com os produtos atualizados
+        // Reescrita do CSV
         try (PrintWriter pw = new PrintWriter(new FileWriter(ficheiro))) {
             for (Produto p : produtos) {
-                pw.println(p.nome + "," + p.categoria + "," + p.preco + "," + p.desconto + "," +
-                        p.stock + "," + p.lote + "," + (p.validade != null ? p.validade : ""));
+                pw.println(p.getNome() + "," + p.getCategoria() + "," + p.getPreco() + "," +
+                        p.getPrecoCompra() + "," + p.getDesconto() + "," + p.getStock() + "," +
+                        p.getLote() + "," + (p.getValidade() != null ? p.getValidade() : ""));
             }
         }
     }
