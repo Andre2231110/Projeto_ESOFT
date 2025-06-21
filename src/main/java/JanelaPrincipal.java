@@ -40,13 +40,11 @@ public class JanelaPrincipal extends JFrame {
 
         btnFilmes.addActionListener(e -> {
             new JanelaFilmes(nomeUser);
-            dispose();
         });
 
         btnVendaBilhetes.addActionListener(e -> {
             List<Filme> filmes = JanelaFilmes.chamarFilmesCSV();
             new JanelaVendaBilhetes(nomeUser, filmes);
-            dispose();
         });
 
 
@@ -67,7 +65,6 @@ public class JanelaPrincipal extends JFrame {
 
         btnCampanhas.addActionListener(e -> {
             new JanelaCampanhas(nomeUser);
-            dispose();
         });
 
         btnFuncionarios.addActionListener(e -> {

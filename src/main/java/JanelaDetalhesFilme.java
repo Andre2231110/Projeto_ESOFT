@@ -13,6 +13,7 @@ public class JanelaDetalhesFilme extends JDialog {
     private JButton removerButton;
     private JButton editarButton;
     private JButton cancelarButton;
+    private JTextArea txtSinopse;
 
     private Filme filme;
 
@@ -20,55 +21,30 @@ public class JanelaDetalhesFilme extends JDialog {
         super(parent, "Detalhes do Filme", true);
         this.filme = filme;
 
+        setContentPane(contentPane);
         setSize(800, 600);
         setLocationRelativeTo(parent);
-        setLayout(null);
 
-        lblImagem = new JLabel();
-        lblImagem.setBounds(40, 40, 180, 240);
-        add(lblImagem);
+        lblTitulo.setText("Título do Filme: " + filme.getTitulo());
+        lblDuracao.setText("Duração: " + filme.getDuracao() + " min");
+        lblGenero.setText("Género: " + filme.getGenero());
+        lblLicenca.setText("Preço da Licença: " + String.format("%.2f €", filme.getPrecoLicenca()));
+        lblBilhete.setText("Preço do Bilhete: " + String.format("%.2f €", filme.getPrecoBilhete()));
+        txtSinopse.setText(filme.getSinopse());
 
-        lblTitulo = new JLabel("<html><b>Título do Filme:</b> " + filme.getTitulo() + "</html>");
-        lblTitulo.setBounds(250, 40, 500, 30);
-        add(lblTitulo);
-
-        lblDuracao = new JLabel("<html><b>Duração:</b> " + filme.getDuracao() + " min</html>");
-        lblDuracao.setBounds(250, 80, 300, 25);
-        add(lblDuracao);
-
-        lblGenero = new JLabel("<html><b>Género:</b> " + filme.getGenero() + "</html>");
-        lblGenero.setBounds(250, 110, 300, 25);
-        add(lblGenero);
-
-        lblLicenca = new JLabel("<html><b>Preço da Licença:</b> " + String.format("%.2f €", filme.getPrecoLicenca()) + "</html>");
-        lblLicenca.setBounds(250, 140, 300, 25);
-        add(lblLicenca);
-
-        lblBilhete = new JLabel("<html><b>Preço do Bilhete:</b> " + String.format("%.2f €", filme.getPrecoBilhete()) + "</html>");
-        lblBilhete.setBounds(250, 170, 300, 25);
-        add(lblBilhete);
-
-        lblSinopse = new JLabel("<html><b>Sinopse:</b><br><div style='width:500px'>" + filme.getSinopse() + "</div></html>");
-        lblSinopse.setBounds(40, 300, 700, 120);
-        add(lblSinopse);
-
-        editarButton = new JButton("Editar");
-        editarButton.setBounds(200, 460, 100, 30);
-        add(editarButton);
-
-        removerButton = new JButton("Remover");
-        removerButton.setBounds(320, 460, 100, 30);
-        add(removerButton);
-
-        cancelarButton = new JButton("Cancelar");
-        cancelarButton.setBounds(440, 460, 100, 30);
-        add(cancelarButton);
 
         SwingUtilities.invokeLater(() -> {
-            ImageIcon icon = new ImageIcon(filme.getImagem());
-            Image img = icon.getImage().getScaledInstance(lblImagem.getWidth(), lblImagem.getHeight(), Image.SCALE_SMOOTH);
-            lblImagem.setIcon(new ImageIcon(img));
+            if (lblImagem.getWidth() > 0 && lblImagem.getHeight() > 0) {
+                ImageIcon icon = new ImageIcon(filme.getImagem());
+                Image img = icon.getImage().getScaledInstance(lblImagem.getWidth(), lblImagem.getHeight(), Image.SCALE_SMOOTH);
+                lblImagem.setIcon(new ImageIcon(img));
+            } else {
+                ImageIcon icon = new ImageIcon(filme.getImagem());
+                Image img = icon.getImage().getScaledInstance(120, 160, Image.SCALE_SMOOTH);
+                lblImagem.setIcon(new ImageIcon(img));
+            }
         });
+
 
         cancelarButton.addActionListener(e -> dispose());
 
