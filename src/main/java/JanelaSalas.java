@@ -25,6 +25,8 @@ public class JanelaSalas extends JFrame {
     private JButton btnRemover;
     private JButton btnReservas;
     private JButton btnSair;
+    private JButton btnBack;
+    private JButton btnEquipamentos;
 
     private final String FICHEIRO_SALAS = "src/main/java/csv/salas.csv";
 
@@ -36,14 +38,108 @@ public class JanelaSalas extends JFrame {
 
         listaSalas = new ArrayList<>();
 
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(800, 600);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(900, 600);
         setLocationRelativeTo(null);
+        setLayout(null);
+        getContentPane().setBackground(new Color(240, 255, 240));
 
-        painelPrincipal = new JPanel(new BorderLayout());
+        btnBack = new JButton("< Back");
+        btnBack.setBounds(10, 10, 80, 25);
+        btnBack.setBorderPainted(false);
+        btnBack.setFocusPainted(false);
+        btnBack.setContentAreaFilled(false);
+        btnBack.setForeground(Color.BLACK);
+        btnBack.setFont(new Font("Serif", Font.PLAIN, 14));
+        btnBack.addActionListener(e -> dispose());
+        add(btnBack);
 
-        criarFormulario();
+        JLabel lblTitulo = new JLabel("Gestão de Salas", SwingConstants.CENTER);
+        lblTitulo.setFont(new Font("Serif", Font.BOLD, 20));
+        lblTitulo.setBounds(300, 10, 300, 25);
+        add(lblTitulo);
+
+
         criarTabela();
+        criarFormulario();
+        criarBotoes();
+
+        carregarSalasDeCSV();
+        atualizarTabela();
+
+        setVisible(true);
+    }
+
+    private void criarFormulario() {
+        int x = 500;
+
+        JLabel lblNome = new JLabel("Nome:");
+        lblNome.setBounds(x, 60, 100, 25);
+        add(lblNome);
+
+        txtNome = new JTextField();
+        txtNome.setBounds(x + 120, 60, 150, 25);
+        add(txtNome);
+
+        JLabel lblTipo = new JLabel("Tipo:");
+        lblTipo.setBounds(x, 100, 100, 25);
+        add(lblTipo);
+
+        cmbTipo = new JComboBox<>(new String[]{"Normal", "VIP", "Infantil", "3D", "IMAX"});
+        cmbTipo.setBounds(x + 120, 100, 150, 25);
+        add(cmbTipo);
+
+        JLabel lblLayout = new JLabel("Layout:");
+        lblLayout.setBounds(x, 140, 100, 25);
+        add(lblLayout);
+
+        txtLayout = new JTextField();
+        txtLayout.setBounds(x + 120, 140, 150, 25);
+        add(txtLayout);
+
+        JLabel lblSom = new JLabel("Som:");
+        lblSom.setBounds(x, 180, 100, 25);
+        add(lblSom);
+
+        cmbSom = new JComboBox<>(new String[]{"Estéreo", "Dolby", "IMAX"});
+        cmbSom.setBounds(x + 120, 180, 150, 25);
+        add(cmbSom);
+
+        JLabel lblAcessivel = new JLabel("Acessível:");
+        lblAcessivel.setBounds(x, 220, 100, 25);
+        add(lblAcessivel);
+
+        chkAcessivel = new JCheckBox();
+        chkAcessivel.setBounds(x + 120, 220, 30, 25);
+        add(chkAcessivel);
+
+        JLabel lblInativa = new JLabel("Inativa:");
+        lblInativa.setBounds(x, 260, 100, 25);
+        add(lblInativa);
+
+        chkInativa = new JCheckBox();
+        chkInativa.setBounds(x + 120, 260, 300, 25);
+        add(chkInativa);
+
+        JLabel lblPreco = new JLabel("Preço Custo:");
+        lblPreco.setBounds(x, 300, 100, 25);
+        add(lblPreco);
+
+        txtPrecoCusto = new JTextField();
+        txtPrecoCusto.setBounds(x + 120, 300, 150, 25);
+        add(txtPrecoCusto);
+    }
+
+
+    private void criarTabela() {
+        modeloTabela = new DefaultTableModel(new String[]{"Nome", "Tipo", "Layout", "Som", "Acessível", "Inativa", "Preço"}, 0);
+        tabelaSalas = new JTable(modeloTabela);
+        JScrollPane scroll = new JScrollPane(tabelaSalas);
+        scroll.setBounds(30, 60, 430, 300);
+        scroll.getViewport().setBackground(new Color(220, 255, 200));
+        scroll.setBorder(BorderFactory.createLineBorder(new Color(0, 120, 255), 2));
+        add(scroll);
+
         tabelaSalas.getSelectionModel().addListSelectionListener(e -> {
             int linha = tabelaSalas.getSelectedRow();
             if (linha >= 0) {
@@ -57,76 +153,47 @@ public class JanelaSalas extends JFrame {
                 txtPrecoCusto.setText(String.valueOf(salaSelecionada.getPrecoCusto()));
             }
         });
-        criarBotoes();
-
-        setContentPane(painelPrincipal);
-        setVisible(true);
-        carregarSalasDeCSV();
-        atualizarTabela();
-    }
-
-    private void criarFormulario() {
-        JPanel painelFormulario = new JPanel(new GridLayout(8, 2));
-
-        painelFormulario.add(new JLabel("Nome da Sala:"));
-        txtNome = new JTextField();
-        painelFormulario.add(txtNome);
-
-        painelFormulario.add(new JLabel("Tipo de Sala:"));
-        cmbTipo = new JComboBox<>(new String[]{"Normal", "VIP", "Infantil", "3D", "IMAX"});
-        painelFormulario.add(cmbTipo);
-
-        painelFormulario.add(new JLabel("Layout:"));
-        txtLayout = new JTextField();
-        painelFormulario.add(txtLayout);
-
-        painelFormulario.add(new JLabel("Tipo de Som:"));
-        cmbSom = new JComboBox<>(new String[]{"Estéreo", "Dolby", "IMAX"});
-        painelFormulario.add(cmbSom);
-
-        painelFormulario.add(new JLabel("Acessível:"));
-        chkAcessivel = new JCheckBox();
-        painelFormulario.add(chkAcessivel);
-
-        painelFormulario.add(new JLabel("Inativa:"));
-        chkInativa = new JCheckBox();
-        painelFormulario.add(chkInativa);
-
-        painelFormulario.add(new JLabel("Preço de Custo (€):"));
-        txtPrecoCusto = new JTextField();
-        painelFormulario.add(txtPrecoCusto);
-
-        painelPrincipal.add(painelFormulario, BorderLayout.NORTH);
-    }
-
-    private void criarTabela() {
-        modeloTabela = new DefaultTableModel(new String[]{"Nome", "Tipo", "Layout", "Som", "Acessível", "Estado", "Preço Custo (€)"}, 0);
-        tabelaSalas = new JTable(modeloTabela);
-        painelPrincipal.add(new JScrollPane(tabelaSalas), BorderLayout.CENTER);
     }
 
     private void criarBotoes() {
-        JPanel painelBotoes = new JPanel();
 
+        int x = 360;
+        int y = 380;
+        int largura = 80;
+        int altura = 40;
+        int gap = 20;
         btnAdicionar = new JButton("Adicionar");
-        btnEditar = new JButton("Editar");
-        btnRemover = new JButton("Remover");
-        btnSair = new JButton("Sair");
-        btnReservas = new JButton("Reservas");
-
-        painelBotoes.add(btnAdicionar);
-        painelBotoes.add(btnEditar);
-        painelBotoes.add(btnRemover);
-        painelBotoes.add(btnReservas);
-        painelBotoes.add(btnSair);
-
-        painelPrincipal.add(painelBotoes, BorderLayout.SOUTH);
-
+        btnAdicionar.setBounds(x, y, largura, altura);
         btnAdicionar.addActionListener(e -> adicionarSala());
+
+        add(btnAdicionar);
+
+        btnEditar = new JButton("Editar");
+        btnEditar.setBounds(x + (largura + gap) * 1, y, largura, altura);
+
         btnEditar.addActionListener(e -> editarSala());
+
+        add(btnEditar);
+
+        btnRemover = new JButton("Remover");
+        btnRemover.setBounds(x + (largura + gap) * 2, y, largura, altura);
         btnRemover.addActionListener(e -> desativarSala());
-        btnSair.addActionListener(e -> dispose());
+        add(btnRemover);
+
+        btnReservas = new JButton("Reservas");
+        btnReservas.setBounds(x + (largura + gap) * 3, y, largura, altura);
         btnReservas.addActionListener(e -> abrirJanelaReservas());
+        add(btnReservas);
+
+        btnSair = new JButton("Sair");
+        btnSair.setBounds(x + (largura + gap) * 4, y, largura, altura);
+        btnSair.addActionListener(e -> dispose());
+        add(btnSair);
+
+        btnEquipamentos = new JButton("Equipamentos");
+        btnEquipamentos.setBounds(x, y + 60, largura, altura);
+        btnEquipamentos.addActionListener(e -> abrirJanelaEquipamentos());
+        add(btnEquipamentos);
     }
 
     private void adicionarSala() {
@@ -348,6 +415,30 @@ public class JanelaSalas extends JFrame {
         }
 
         Sala salaSelecionada = listaSalas.get(linhaSelecionada);
+
+        if (!salaSelecionada.isAtiva()) {
+            JOptionPane.showMessageDialog(this,
+                    "Esta sala está inativa e não pode ter reservas.",
+                    "Sala Inativa",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         new JanelaReservas(this, salaSelecionada);
+    }
+    private void abrirJanelaEquipamentos() {
+        int linhaSelecionada = tabelaSalas.getSelectedRow();
+        if (linhaSelecionada == -1) {
+            JOptionPane.showMessageDialog(this,
+                    "Nenhuma sala selecionada.",
+                    "Aviso",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        Sala salaSelecionada = listaSalas.get(linhaSelecionada);
+
+
+        new JanelaEquipamentos(this, salaSelecionada);
     }
 }
