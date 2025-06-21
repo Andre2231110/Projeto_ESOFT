@@ -9,6 +9,9 @@ public class Sala {
     private double precoCusto;
 
     public Sala(String nome, String tipo, String layout, String som, boolean acessivel, boolean ativa, double precoCusto) {
+        if (nome == null || nome.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nome da sala não pode ser vazio");
+        }
         this.nome = nome;
         this.tipo = tipo;
         this.layout = layout;

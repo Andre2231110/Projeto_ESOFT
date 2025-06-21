@@ -36,7 +36,13 @@ public class JanelaReservas extends JDialog {
 
         setSize(900, 500);
         setLocationRelativeTo(parent);
-        setLayout(new BorderLayout());
+        setLayout(null);
+        getContentPane().setBackground(new Color(240, 255, 240));
+
+        JLabel lblTitulo = new JLabel("Reservas - " + sala.getNome(), SwingConstants.CENTER);
+        lblTitulo.setFont(new Font("Serif", Font.BOLD, 20));
+        lblTitulo.setBounds(350, 10, 200, 25);
+        add(lblTitulo);
 
         criarFormulario();
         criarTabela();
@@ -49,33 +55,46 @@ public class JanelaReservas extends JDialog {
     }
 
     private void criarFormulario() {
-        JPanel painelFormulario = new JPanel(new GridLayout(6, 2));
-        painelFormulario.setBorder(BorderFactory.createTitledBorder("Nova Reserva de Grupo"));
+        int x = 500;
 
-        painelFormulario.add(new JLabel("Responsável do Grupo:"));
+        JLabel lblResponsavel = new JLabel("Responsável:");
+        lblResponsavel.setBounds(x, 60, 120, 25);
+        add(lblResponsavel);
         txtResponsavel = new JTextField();
-        painelFormulario.add(txtResponsavel);
+        txtResponsavel.setBounds(x + 130, 60, 150, 25);
+        add(txtResponsavel);
 
-        painelFormulario.add(new JLabel("Nº Telefone:"));
+        JLabel lblTelefone = new JLabel("Telefone:");
+        lblTelefone.setBounds(x, 100, 120, 25);
+        add(lblTelefone);
         txtTelefone = new JTextField();
-        painelFormulario.add(txtTelefone);
+        txtTelefone.setBounds(x + 130, 100, 150, 25);
+        add(txtTelefone);
 
-        painelFormulario.add(new JLabel("Quantidade de Pessoas:"));
+        JLabel lblQuantidade = new JLabel("Quantidade:");
+        lblQuantidade.setBounds(x, 140, 120, 25);
+        add(lblQuantidade);
         txtQuantidade = new JTextField();
-        painelFormulario.add(txtQuantidade);
+        txtQuantidade.setBounds(x + 130, 140, 150, 25);
+        add(txtQuantidade);
 
-        painelFormulario.add(new JLabel("Preço Pago (€):"));
+        JLabel lblPreco = new JLabel("Preço Pago (€):");
+        lblPreco.setBounds(x, 180, 120, 25);
+        add(lblPreco);
         txtPreco = new JTextField();
-        painelFormulario.add(txtPreco);
+        txtPreco.setBounds(x + 130, 180, 150, 25);
+        add(txtPreco);
 
-        painelFormulario.add(new JLabel("Data (AAAA-MM-DD):"));
+        JLabel lblData = new JLabel("Data (AAAA-MM-DD):");
+        lblData.setBounds(x, 220, 150, 25);
+        add(lblData);
         txtData = new JTextField();
-        painelFormulario.add(txtData);
+        txtData.setBounds(x + 130, 220, 150, 25);
+        add(txtData);
 
         btnAdicionar = new JButton("Adicionar");
-        painelFormulario.add(btnAdicionar);
-
-        add(painelFormulario, BorderLayout.NORTH);
+        btnAdicionar.setBounds(x + 90, 270, 120, 30);
+        add(btnAdicionar);
 
         btnAdicionar.addActionListener(e -> adicionarReserva());
     }
@@ -83,14 +102,19 @@ public class JanelaReservas extends JDialog {
     private void criarTabela() {
         modeloTabela = new DefaultTableModel(new String[]{"Responsável", "Telefone", "Quantidade", "Preço (€)", "Data"}, 0);
         tabelaReservas = new JTable(modeloTabela);
-        add(new JScrollPane(tabelaReservas), BorderLayout.CENTER);
+        JScrollPane scroll = new JScrollPane(tabelaReservas);
+        scroll.setBounds(30, 60, 430, 300);
+        scroll.getViewport().setBackground(new Color(220, 255, 200));
+        scroll.setBorder(BorderFactory.createLineBorder(new Color(0, 120, 255), 2));
+        add(scroll);
     }
 
     private void criarBotoes() {
         btnRemover = new JButton("Remover Reserva");
-        JPanel painelSul = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        painelSul.add(btnRemover);
-        add(painelSul, BorderLayout.SOUTH);
+        btnRemover.setBounds(30, 380, 180, 30);
+        btnRemover.setBackground(Color.RED);
+        btnRemover.setForeground(Color.WHITE);
+        add(btnRemover);
 
         btnRemover.addActionListener(e -> removerReserva());
     }
@@ -170,14 +194,14 @@ public class JanelaReservas extends JDialog {
     private void carregarReservasDeCSV() {
         File ficheiro = new File(FICHEIRO_RESERVAS);
         if (!ficheiro.exists()) return;
-
+        String nomeSalaAtual = sala.getNome();
         try (Scanner scanner = new Scanner(ficheiro)) {
             listaReservas.clear();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             while (scanner.hasNextLine()) {
                 String linha = scanner.nextLine();
                 String[] partes = linha.split(",");
-                if (partes.length == 5) {
+                if (partes.length == 6 && partes[5].equalsIgnoreCase(nomeSalaAtual)) {
                     String responsavel = partes[0];
                     String telefone = partes[1];
                     int quantidade = Integer.parseInt(partes[2]);
@@ -203,12 +227,14 @@ public class JanelaReservas extends JDialog {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             try (PrintWriter writer = new PrintWriter(ficheiro)) {
                 for (Reserva r : listaReservas) {
-                    writer.printf(Locale.US, "%s,%s,%d,%.2f,%s%n",
+                    writer.printf(Locale.US, "%s,%s,%d,%.2f,%s,%s%n",
                             r.getResponsavel(),
                             r.getTelefone(),
                             r.getQuantidadePessoas(),
                             r.getPrecoPago(),
-                            sdf.format(r.getData()));
+                            sdf.format(r.getData()),
+                            sala.getNome()
+                    );
                 }
             }
         } catch (Exception e) {
