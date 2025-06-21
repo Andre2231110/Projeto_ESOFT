@@ -186,7 +186,7 @@ public class JanelaVendasBar extends JFrame {
         return total;
     }
 
-    private static class ItemCarrinho {
+    public static class ItemCarrinho {
         int quantidade;
         double precoUnitario;
 
