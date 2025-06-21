@@ -8,8 +8,13 @@ public class JanelaFuncionario extends JFrame {
     private JList<Funcionario> listaFuncionarios;
     private JTextArea detalhesFuncionario;
     private static final String CSV_FILE = "src/main/java/csv/funcionarios.csv";
+    private static final String VENDAS_FILE = "src/main/java/csv/vendasUtilizador.csv";
+
+    private String nomeUser;
 
     public JanelaFuncionario(String nomeUser) {
+        this.nomeUser = nomeUser;
+
         setTitle("Funcionário");
         setSize(800, 500);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -23,6 +28,11 @@ public class JanelaFuncionario extends JFrame {
         btnBack.setBorderPainted(false);
         btnBack.setFont(new Font("Serif", Font.PLAIN, 14));
         add(btnBack);
+
+        btnBack.addActionListener(e -> {
+            new JanelaPrincipal(nomeUser);
+            dispose();
+        });
 
         JLabel lblTitulo = new JLabel("Funcionário", SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Serif", Font.BOLD, 20));
@@ -54,11 +64,11 @@ public class JanelaFuncionario extends JFrame {
         btnAdd.addActionListener(e -> {
             JanelaAdicionarFunc janela = new JanelaAdicionarFunc(this);
             janela.setVisible(true);
-            modeloFuncionarios.clear(); // limpa lista atual
-            carregarFuncionariosCSV(); // recarrega com novo funcionário
+            modeloFuncionarios.clear();
+            carregarFuncionariosCSV();
         });
 
-        JButton btnEditar = new JButton("edit"); // substitui por ícone real
+        JButton btnEditar = new JButton("edit");
         btnEditar.setBounds(360, 200, 45, 30);
         add(btnEditar);
 
@@ -74,13 +84,12 @@ public class JanelaFuncionario extends JFrame {
             }
         });
 
-
-
         JButton btnRemover = new JButton("Remover");
         btnRemover.setBounds(420, 200, 100, 30);
         btnRemover.setBackground(Color.RED);
         btnRemover.setForeground(Color.WHITE);
         add(btnRemover);
+
         btnRemover.addActionListener(e -> {
             Funcionario f = listaFuncionarios.getSelectedValue();
             if (f != null) {
@@ -92,7 +101,6 @@ public class JanelaFuncionario extends JFrame {
                 JOptionPane.showMessageDialog(this, "Seleciona um funcionário para eliminar.");
             }
         });
-
 
         listaFuncionarios.addListSelectionListener(e -> {
             Funcionario f = listaFuncionarios.getSelectedValue();
@@ -106,9 +114,9 @@ public class JanelaFuncionario extends JFrame {
             }
         });
 
-        btnBack.addActionListener(e -> dispose());
-
         carregarFuncionariosCSV();
+        atualizarLucrosDosFuncionarios();
+        guardarFuncionariosAtualizadosNoCSV(); // guardar após atualização
         setVisible(true);
     }
 
@@ -139,4 +147,42 @@ public class JanelaFuncionario extends JFrame {
         }
     }
 
+    private void atualizarLucrosDosFuncionarios() {
+        File vendasFile = new File(VENDAS_FILE);
+        if (!vendasFile.exists()) return;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(vendasFile))) {
+            String linha;
+            while ((linha = br.readLine()) != null) {
+                // Corrige separador para ";"
+                String[] partes = linha.split(";", -1);
+                if (partes.length == 2) {
+                    String nomeVenda = partes[0].trim();
+                    double valor = Double.parseDouble(partes[1].trim());
+
+                    for (int i = 0; i < modeloFuncionarios.size(); i++) {
+                        Funcionario f = modeloFuncionarios.getElementAt(i);
+                        if (f.nome.equalsIgnoreCase(nomeVenda)) {
+                            f.lucroTotal += valor;
+                            break;
+                        }
+                    }
+                }
+            }
+        } catch (IOException | NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar lucros dos funcionários.");
+        }
+    }
+
+
+    private void guardarFuncionariosAtualizadosNoCSV() {
+        try (PrintWriter pw = new PrintWriter(new FileWriter(CSV_FILE))) {
+            for (int i = 0; i < modeloFuncionarios.size(); i++) {
+                Funcionario f = modeloFuncionarios.getElementAt(i);
+                pw.println(f.nome + "," + f.contacto + "," + f.turno + "," + f.lucroTotal + "," + f.func);
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao guardar os dados atualizados dos funcionários.");
+        }
+    }
 }
