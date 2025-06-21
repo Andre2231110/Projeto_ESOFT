@@ -18,7 +18,6 @@ public class JanelaFilmes extends JFrame {
     private List<Filme> filmes = new ArrayList<>();
     private static final String FICHEIRO_CSV = "src/main/java/csv/Filmes.csv";
 
-
     public JanelaFilmes(String nomeUser) {
         this.nomeUser = nomeUser;
 
@@ -37,7 +36,7 @@ public class JanelaFilmes extends JFrame {
             dispose();
         });
 
-        carregarFilmesCSV();
+        filmes = chamarFilmesCSV();
         atualizarLista();
 
         addWindowListener(new WindowAdapter() {
@@ -97,37 +96,28 @@ public class JanelaFilmes extends JFrame {
     public void guardarFilmesCSV() {
         try (PrintWriter writer = new PrintWriter(new FileWriter(FICHEIRO_CSV))) {
             for (Filme f : filmes) {
-                writer.println(f.getTitulo() + ";" +
-                        f.getDuracao() + ";" +
-                        f.getSinopse() + ";" +
-                        f.getGenero() + ";" +
-                        f.getImagem());
+                writer.println(f.toCSV());
             }
         } catch (IOException e) {
             System.err.println("Erro ao guardar filmes: " + e.getMessage());
         }
     }
 
-    private void carregarFilmesCSV() {
+    public static List<Filme> chamarFilmesCSV() {
+        List<Filme> lista = new ArrayList<>();
         File file = new File(FICHEIRO_CSV);
-        if (!file.exists()) return;
+        if (!file.exists()) return lista;
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String linha;
             while ((linha = reader.readLine()) != null) {
-                String[] partes = linha.split(";");
-                if (partes.length == 5) {
-                    String titulo = partes[0];
-                    int duracao = Integer.parseInt(partes[1]);
-                    String sinopse = partes[2];
-                    String genero = partes[3];
-                    String imagem = partes[4];
-
-                    filmes.add(new Filme(titulo, duracao, sinopse, genero, imagem));
-                }
+                Filme f = Filme.fromCSV(linha);
+                if (f != null) lista.add(f);
             }
         } catch (IOException | NumberFormatException e) {
             System.err.println("Erro ao carregar filmes: " + e.getMessage());
         }
+
+        return lista;
     }
 }

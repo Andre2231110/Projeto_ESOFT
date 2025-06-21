@@ -1,7 +1,7 @@
 import javax.swing.*;
-        import java.awt.*;
-        import java.awt.event.*;
-        import java.util.List;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.List;
 
 public class JanelaVendaBilhetes extends JFrame {
     private JPanel painelTopo;
@@ -12,35 +12,30 @@ public class JanelaVendaBilhetes extends JFrame {
     private JPanel contentPane;
     private JScrollPane scrollFilmes;
     private String nomeUser;
-    private List<Filme> listaFilmes;
+    private List<Filme> filmes;
 
     public JanelaVendaBilhetes(String nomeUser, List<Filme> listaFilmes) {
         this.nomeUser = nomeUser;
-        this.listaFilmes = listaFilmes;
+        this.filmes = listaFilmes;
 
         setTitle("Venda de Bilhetes");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setSize(1000, 700);
         setLocationRelativeTo(null);
 
-        contentPane = new JPanel(new BorderLayout());
         setContentPane(contentPane);
+        scrollFilmes.setViewportView(painelFilmes);
+        painelFilmes.setOpaque(true);
 
-        JPanel topo = new JPanel(new BorderLayout());
-        lblUser = new JLabel("Utilizador: " + nomeUser);
-        backButton = new JButton("< Back");
+        lblUser.setText("Utilizador: " + nomeUser);
+        System.out.println("Foram carregados " + filmes.size() + " filmes.");
+
         backButton.addActionListener(e -> {
             new JanelaPrincipal(nomeUser);
             dispose();
         });
 
-        topo.add(backButton, BorderLayout.WEST);
-        topo.add(lblUser, BorderLayout.EAST);
-        contentPane.add(topo, BorderLayout.NORTH);
-
-        painelFilmes = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));
-        JScrollPane scroll = new JScrollPane(painelFilmes);
-        contentPane.add(scroll, BorderLayout.CENTER);
+        painelFilmes.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 20));
 
         atualizarFilmes();
         setVisible(true);
@@ -49,31 +44,35 @@ public class JanelaVendaBilhetes extends JFrame {
     private void atualizarFilmes() {
         painelFilmes.removeAll();
 
-        for (Filme f : listaFilmes) {
-            JPanel card = new JPanel();
-            card.setLayout(new BorderLayout());
+        for (Filme f : filmes) {
+            JPanel card = new JPanel(new BorderLayout());
             card.setPreferredSize(new Dimension(200, 300));
             card.setBorder(BorderFactory.createLineBorder(Color.GRAY));
             card.setBackground(new Color(235, 255, 235));
 
-            ImageIcon icon = new ImageIcon(f.getImagem());
-            Image scaled = icon.getImage().getScaledInstance(180, 220, Image.SCALE_SMOOTH);
-            JLabel lblImagem = new JLabel(new ImageIcon(scaled));
+            JLabel lblImagem;
+            try {
+                ImageIcon icon = new ImageIcon(f.getImagem());
+                Image scaled = icon.getImage().getScaledInstance(180, 220, Image.SCALE_SMOOTH);
+                lblImagem = new JLabel(new ImageIcon(scaled));
+            } catch (Exception ex) {
+                System.out.println("Erro na imagem do filme: " + f.getTitulo() + " → " + f.getImagem());
+                continue;
+            }
+
             lblImagem.setHorizontalAlignment(SwingConstants.CENTER);
-
-            JLabel lblTitulo = new JLabel("<html><center>" + f.getTitulo() + "</center></html>");
-            lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
-
+            JLabel lblTitulo = new JLabel("<html><center>" + f.getTitulo() + "</center></html>", SwingConstants.CENTER);
             JButton btnSelecionar = new JButton("Selecionar");
+
             btnSelecionar.addActionListener(e -> {
-                new JanelaSessoes(f, nomeUser);
+                List<Sessao> sessoes = JanelaVendaSessoes.carregarSessoesCSV(filmes);
+                new JanelaVendaSessoes(f, nomeUser, sessoes);
                 dispose();
             });
 
             card.add(lblImagem, BorderLayout.CENTER);
             card.add(lblTitulo, BorderLayout.NORTH);
             card.add(btnSelecionar, BorderLayout.SOUTH);
-
             painelFilmes.add(card);
         }
 

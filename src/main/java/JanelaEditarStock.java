@@ -15,7 +15,7 @@ public class JanelaEditarStock extends JDialog {
     private JButton btnCancelar;
 
     private Produto produto;
-    private static final String CSV_FILE = "produtos.csv";
+    private static final String CSV_FILE = "src/main/java/csv/produtos.csv";
 
     public JanelaEditarStock(JFrame parent, Produto produto) {
         super(parent, "Editar Stock", true);

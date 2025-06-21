@@ -18,7 +18,7 @@ public class JanelaSessao extends JFrame {
 
     private JTextField txtData;
     private static final String FICHEIRO_FILMES = "src/main/java/csv/Filmes.csv";
-    private static final String FICHEIRO_SESSOES = "sessoes.csv";
+    private static final String FICHEIRO_SESSOES = "src/main/java/csv/sessoes.csv";
 
     public JanelaSessao() {
         this.filmes = carregarFilmesDeCSV();
@@ -32,7 +32,6 @@ public class JanelaSessao extends JFrame {
         contentPane = new JPanel(new BorderLayout());
         setContentPane(contentPane);
 
-        // Lista de filmes
         modeloFilmes = new DefaultListModel<>();
         for (Filme f : filmes) modeloFilmes.addElement(f.getTitulo());
 
@@ -41,18 +40,16 @@ public class JanelaSessao extends JFrame {
         JScrollPane scrollFilmes = new JScrollPane(listaFilmes);
         scrollFilmes.setPreferredSize(new Dimension(250, 0));
 
-        // Lista de sessões
         modeloSessoes = new DefaultListModel<>();
         listaSessoes = new JList<>(modeloSessoes);
         JScrollPane scrollSessoes = new JScrollPane(listaSessoes);
 
-        // Painel direito
         JPanel painelDireito = new JPanel(new BorderLayout());
         JPanel painelTopo = new JPanel();
         JButton btnVoltar = new JButton("Voltar");
         painelTopo.add(btnVoltar);
         btnVoltar.addActionListener(e -> {
-            new JanelaPrincipal(""); // substitui se necessário
+            new JanelaPrincipal("");
             dispose();
         });
 
@@ -62,42 +59,36 @@ public class JanelaSessao extends JFrame {
         painelDireito.add(painelTopo, BorderLayout.NORTH);
         painelDireito.add(scrollSessoes, BorderLayout.CENTER);
 
-        // Botões inferiores
         JPanel painelBotoes = new JPanel();
         JButton btnAdicionar = new JButton("+");
         JButton btnEditar = new JButton("✎");
         JButton btnRemover = new JButton("Remover");
         JButton btnDisponiveis = new JButton("Sessões Disponíveis");
 
-        btnDisponiveis.addActionListener(e -> {
-            new JanelaMostrarSessoes(); // Abre a nova janela
-        });
+        btnDisponiveis.addActionListener(e -> new JanelaMostrarSessoes());
 
         btnRemover.setForeground(Color.WHITE);
         btnRemover.setBackground(Color.RED);
         btnRemover.addActionListener(e -> {
             int indexFilme = listaFilmes.getSelectedIndex();
             int indexSessao = listaSessoes.getSelectedIndex();
-
             if (indexFilme == -1 || indexSessao == -1) {
                 JOptionPane.showMessageDialog(this, "Seleciona um filme e uma sessão para remover.");
                 return;
             }
-
             Filme filmeSelecionado = filmes.get(indexFilme);
             String dataSelecionada = txtData.getText().trim();
 
             List<Sessao> sessoesDoFilme = new ArrayList<>();
             for (Sessao s : sessoes) {
-                if (s.getFilme().getTitulo().equalsIgnoreCase(filmeSelecionado.getTitulo())
-                        && s.getData().equals(dataSelecionada)) {
+                if (s.getFilme().getTitulo().equalsIgnoreCase(filmeSelecionado.getTitulo()) &&
+                        s.getData().equals(dataSelecionada)) {
                     sessoesDoFilme.add(s);
                 }
             }
 
             Sessao sessaoSelecionada = sessoesDoFilme.get(indexSessao);
             JanelaRemoverSessao janelaRemover = new JanelaRemoverSessao(this, sessaoSelecionada);
-
             if (janelaRemover.foiConfirmado()) {
                 sessoes.remove(sessaoSelecionada);
                 guardarSessoesCSV();
@@ -105,7 +96,6 @@ public class JanelaSessao extends JFrame {
                 JOptionPane.showMessageDialog(this, "Sessão removida com sucesso.");
             }
         });
-
 
         painelBotoes.add(btnAdicionar);
         painelBotoes.add(btnEditar);
@@ -116,7 +106,6 @@ public class JanelaSessao extends JFrame {
         contentPane.add(scrollFilmes, BorderLayout.WEST);
         contentPane.add(painelDireito, BorderLayout.CENTER);
 
-        // Listeners
         listaFilmes.addListSelectionListener(e -> mostrarSessoesDoFilmeSelecionado());
 
         txtData.getDocument().addDocumentListener(new DocumentListener() {
@@ -125,7 +114,6 @@ public class JanelaSessao extends JFrame {
             public void changedUpdate(DocumentEvent e) { mostrarSessoesDoFilmeSelecionado(); }
         });
 
-        // Adicionar Sessão
         btnAdicionar.addActionListener(e -> {
             int index = listaFilmes.getSelectedIndex();
             if (index == -1) {
@@ -142,11 +130,9 @@ public class JanelaSessao extends JFrame {
             }
         });
 
-        // Editar Sessão
         btnEditar.addActionListener(e -> {
             int indexFilme = listaFilmes.getSelectedIndex();
             int indexSessao = listaSessoes.getSelectedIndex();
-
             if (indexFilme == -1 || indexSessao == -1) {
                 JOptionPane.showMessageDialog(this, "Seleciona um filme e uma sessão para editar.");
                 return;
@@ -154,7 +140,6 @@ public class JanelaSessao extends JFrame {
 
             Filme filmeSelecionado = filmes.get(indexFilme);
             String dataSelecionada = txtData.getText().trim();
-
             List<Sessao> sessoesDoFilme = new ArrayList<>();
             for (Sessao s : sessoes) {
                 if (s.getFilme().getTitulo().equalsIgnoreCase(filmeSelecionado.getTitulo()) &&
@@ -166,7 +151,6 @@ public class JanelaSessao extends JFrame {
             Sessao sessaoSelecionada = sessoesDoFilme.get(indexSessao);
             JanelaEditarSessao janelaEditar = new JanelaEditarSessao(this, sessaoSelecionada);
             Sessao sessaoEditada = janelaEditar.getSessaoEditada();
-
             if (sessaoEditada != null) {
                 sessoes.remove(sessaoSelecionada);
                 sessoes.add(sessaoEditada);
@@ -188,8 +172,8 @@ public class JanelaSessao extends JFrame {
         Filme filmeSelecionado = filmes.get(index);
 
         for (Sessao s : sessoes) {
-            if (s.getFilme().getTitulo().equalsIgnoreCase(filmeSelecionado.getTitulo())
-                    && s.getData().equals(dataSelecionada)) {
+            if (s.getFilme().getTitulo().equalsIgnoreCase(filmeSelecionado.getTitulo()) &&
+                    s.getData().equals(dataSelecionada)) {
                 modeloSessoes.addElement(s.getHoraInicio() + " → " + s.getHoraFim());
             }
         }
@@ -203,9 +187,7 @@ public class JanelaSessao extends JFrame {
             String linha;
             while ((linha = br.readLine()) != null) {
                 Sessao s = Sessao.fromCSV(linha, filmes);
-                if (s != null) {
-                    sessoes.add(s);
-                }
+                if (s != null) sessoes.add(s);
             }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Erro ao ler o ficheiro de sessões.");
@@ -231,13 +213,16 @@ public class JanelaSessao extends JFrame {
             String linha;
             while ((linha = br.readLine()) != null) {
                 String[] partes = linha.split(";");
-                if (partes.length == 5) {
+                if (partes.length >= 7) {
                     String titulo = partes[0];
                     int duracao = Integer.parseInt(partes[1]);
                     String sinopse = partes[2];
                     String genero = partes[3];
                     String imagem = partes[4];
-                    lista.add(new Filme(titulo, duracao, sinopse, genero, imagem));
+                    double licenca = Double.parseDouble(partes[5]);
+                    double bilhete = Double.parseDouble(partes[6]);
+
+                    lista.add(new Filme(titulo, duracao, sinopse, genero, imagem, licenca, bilhete));
                 }
             }
         } catch (IOException | NumberFormatException e) {

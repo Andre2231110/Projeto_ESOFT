@@ -7,7 +7,7 @@ public class JanelaFuncionario extends JFrame {
     private DefaultListModel<Funcionario> modeloFuncionarios;
     private JList<Funcionario> listaFuncionarios;
     private JTextArea detalhesFuncionario;
-    private static final String CSV_FILE = "funcionarios.csv";
+    private static final String CSV_FILE = "src/main/java/csv/funcionarios.csv";
 
     public JanelaFuncionario(String nomeUser) {
         setTitle("Funcionário");

@@ -40,10 +40,8 @@ public class JanelaMostrarSessoes extends JFrame {
         splitPane.setDividerLocation(250);
         add(splitPane);
 
-        // Data atual real
         String dataAtual = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-        // Preencher a lista com sessões do dia atual
         for (Sessao s : sessoes) {
             if (s.getData().equals(dataAtual)) {
                 sessoesFiltradas.add(s);
@@ -51,7 +49,6 @@ public class JanelaMostrarSessoes extends JFrame {
             }
         }
 
-        // Mostrar detalhes ao selecionar
         listaSessoes.addListSelectionListener(e -> {
             int index = listaSessoes.getSelectedIndex();
             if (index != -1) {
@@ -61,6 +58,8 @@ public class JanelaMostrarSessoes extends JFrame {
                         "🎬 Título: " + f.getTitulo() +
                                 "\n⏱️ Duração: " + f.getDuracao() + " minutos" +
                                 "\n🎭 Género: " + f.getGenero() +
+                                "\n💸 Preço Licença: " + f.getPrecoLicenca() + " €" +
+                                "\n🎟️ Preço Bilhete: " + f.getPrecoBilhete() + " €" +
                                 "\n📅 Data: " + s.getData() +
                                 "\n🕓 Início: " + s.getHoraInicio() +
                                 "\n🕔 Fim: " + s.getHoraFim() +
@@ -81,18 +80,22 @@ public class JanelaMostrarSessoes extends JFrame {
             String linha;
             while ((linha = br.readLine()) != null) {
                 String[] partes = linha.split(";");
-                if (partes.length == 5) {
+                if (partes.length >= 7) {
                     String titulo = partes[0];
                     int duracao = Integer.parseInt(partes[1]);
                     String sinopse = partes[2];
                     String genero = partes[3];
                     String imagem = partes[4];
-                    lista.add(new Filme(titulo, duracao, sinopse, genero, imagem));
+                    double licenca = Double.parseDouble(partes[5]);
+                    double bilhete = Double.parseDouble(partes[6]);
+
+                    lista.add(new Filme(titulo, duracao, sinopse, genero, imagem, licenca, bilhete));
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Erro ao ler o ficheiro de filmes.");
         }
+
         return lista;
     }
 
@@ -110,6 +113,7 @@ public class JanelaMostrarSessoes extends JFrame {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Erro ao ler o ficheiro de sessões.");
         }
+
         return lista;
     }
 }

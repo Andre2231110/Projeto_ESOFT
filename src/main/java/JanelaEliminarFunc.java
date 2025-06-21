@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class JanelaEliminarFunc extends JDialog {
     private Funcionario funcionario;
-    private static final String CSV_FILE = "funcionarios.csv";
+    private static final String CSV_FILE = "src/main/java/csv/funcionarios.csv";
 
     public JanelaEliminarFunc(JFrame parent, Funcionario funcionario) {
         super(parent, "Eliminar Funcionário", true);

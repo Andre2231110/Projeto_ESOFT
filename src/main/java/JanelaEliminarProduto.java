@@ -12,7 +12,7 @@ public class JanelaEliminarProduto extends JDialog {
     private JButton btnCancelar;
 
     private Produto produtoSelecionado;
-    private static final String CSV_FILE = "produtos.csv";
+    private static final String CSV_FILE = "src/main/java/csv/produtos.csv";
 
     public JanelaEliminarProduto(JFrame parent, ArrayList<Produto> produtos) {
         super(parent, "Eliminar Produto", true);

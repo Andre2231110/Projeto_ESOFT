@@ -12,7 +12,7 @@ public class JanelaBar extends JFrame {
     private JList<Produto> listaProdutos;
     private JTextArea detalhesProduto;
     private ArrayList<Produto> listaDeProdutos;
-    private static final String CSV_FILE = "produtos.csv";
+    private static final String CSV_FILE = "src/main/java/csv/produtos.csv";
 
     public JanelaBar(String nomeUser) {
         setTitle("Espaço Bar");

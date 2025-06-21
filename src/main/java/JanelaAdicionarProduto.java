@@ -15,7 +15,7 @@ public class JanelaAdicionarProduto extends JDialog {
 
     private Produto produtoCriado;
 
-    private static final String CSV_FILE = "produtos.csv";
+    private static final String CSV_FILE = "src/main/java/csv/produtos.csv";
 
     public JanelaAdicionarProduto(JFrame parent) {
         super(parent, "Adicionar Produto", true);
@@ -96,9 +96,9 @@ public class JanelaAdicionarProduto extends JDialog {
 
     private void guardarProdutoCSV(Produto p) throws Exception {
         try (PrintWriter pw = new PrintWriter(new FileWriter(CSV_FILE, true))) {
-            pw.println(p.getNome() + "," + p.getCategoria() + "," + p.getPreco() + "," +
-                    p.getPrecoCompra() + "," + p.getDesconto() + "," +
-                    p.getStock() + "," + p.getLote() + "," +
+            pw.println(p.getNome() + ";" + p.getCategoria() + ";" + p.getPreco() + ";" +
+                    p.getPrecoCompra() + ";" + p.getDesconto() + ";" +
+                    p.getStock() + ";" + p.getLote() + ";" +
                     (p.getValidade() != null ? p.getValidade() : ""));
         }
     }

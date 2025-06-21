@@ -7,7 +7,7 @@ public class JanelaAdicionarFunc extends JDialog {
 
     private JTextField txtNome, txtContacto, txtTurno, txtFuncao, txtLucro;
     private JButton btnGuardar, btnCancelar;
-    private static final String CSV_FILE = "funcionarios.csv";
+    private static final String CSV_FILE = "src/main/java/csv/funcionarios.csv";
 
     public JanelaAdicionarFunc(JFrame parent) {
         super(parent, "Adicionar Funcionário", true);

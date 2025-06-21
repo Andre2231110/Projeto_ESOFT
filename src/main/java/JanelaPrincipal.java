@@ -1,5 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JanelaPrincipal extends JFrame {
     private JPanel painelTopo;
@@ -37,7 +43,14 @@ public class JanelaPrincipal extends JFrame {
             dispose();
         });
 
-        btnVendaBilhetes.addActionListener(e -> JOptionPane.showMessageDialog(this, "Ainda por implementar"));
+        btnVendaBilhetes.addActionListener(e -> {
+            List<Filme> filmes = JanelaFilmes.chamarFilmesCSV();
+            new JanelaVendaBilhetes(nomeUser, filmes);
+            dispose();
+        });
+
+
+
         btnSessoes.addActionListener(e -> {
             new JanelaSessao();
             dispose();
@@ -45,22 +58,24 @@ public class JanelaPrincipal extends JFrame {
 
         btnSalas.addActionListener(e -> {
             new JanelaSalas();
-
         });
+
         btnBar.addActionListener(e -> {
             new JanelaBar(nomeUser);
             dispose();
         });
+
         btnCampanhas.addActionListener(e -> {
             new JanelaCampanhas(nomeUser);
             dispose();
         });
+
         btnFuncionarios.addActionListener(e -> {
             new JanelaFuncionario(nomeUser);
             dispose();
         });
 
-         btnConsultas.addActionListener(e -> JOptionPane.showMessageDialog(this, "Ainda por implementar"));
+        btnConsultas.addActionListener(e -> JOptionPane.showMessageDialog(this, "Ainda por implementar"));
 
         setVisible(true);
     }
@@ -71,5 +86,33 @@ public class JanelaPrincipal extends JFrame {
         botao.setIcon(new ImageIcon(imagemRedimensionada));
         botao.setFont(new Font("Arial", Font.BOLD, 14));
     }
-}
 
+    private List<Filme> carregarFilmesCSV() {
+        List<Filme> lista = new ArrayList<>();
+        File file = new File("csv/Filmes.csv");
+
+        if (!file.exists()) return lista;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String linha;
+            while ((linha = reader.readLine()) != null) {
+                String[] partes = linha.split(";");
+                if (partes.length == 7) {
+                    String titulo = partes[0];
+                    int duracao = Integer.parseInt(partes[1]);
+                    String sinopse = partes[2];
+                    String genero = partes[3];
+                    String imagem = partes[4];
+                    int ocupados = Integer.parseInt(partes[5]);
+                    int capacidade = Integer.parseInt(partes[6]);
+
+                    lista.add(new Filme(titulo, duracao, sinopse, genero, imagem, ocupados, capacidade));
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Erro ao carregar filmes: " + e.getMessage());
+        }
+
+        return lista;
+    }
+}

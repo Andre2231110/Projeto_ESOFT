@@ -14,7 +14,7 @@ public class JanelaAdicionarSessao extends JDialog {
 
     private Filme filme;
     private Sessao novaSessao;
-    private static final String FICHEIRO_SESSOES = "sessoes.csv";
+    private static final String FICHEIRO_SESSOES = "src/main/java/csv/sessoes.csv";
 
     public JanelaAdicionarSessao(JFrame parent, Filme filme) {
         super(parent, "Adicionar Sessão", true);

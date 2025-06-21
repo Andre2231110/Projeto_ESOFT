@@ -17,7 +17,7 @@ public class JanelaEditarFunc extends JDialog {
     private String contactoOriginal;
     private String turnoOriginal;
 
-    private static final String CSV_FILE = "funcionarios.csv";
+    private static final String CSV_FILE = "src/main/java/csv/funcionarios.csv";
 
     public JanelaEditarFunc(JFrame parent, Funcionario funcionario) {
         super(parent, "Editar Funcionário", true);
