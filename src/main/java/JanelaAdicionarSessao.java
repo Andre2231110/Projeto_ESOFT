@@ -4,27 +4,33 @@ import java.awt.event.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 public class JanelaAdicionarSessao extends JDialog {
     private JTextField txtData;
     private JTextField txtHoraInicio;
     private JTextField txtHoraFim;
+    private JComboBox<String> cmbSala;
+
     private JButton btnAdicionar;
     private JButton btnCancelar;
 
     private Filme filme;
     private Sessao novaSessao;
+    private List<Sala> salasDisponiveis;
+
     private static final String FICHEIRO_SESSOES = "src/main/java/csv/sessoes.csv";
 
-    public JanelaAdicionarSessao(JFrame parent, Filme filme) {
+    public JanelaAdicionarSessao(JFrame parent, Filme filme, List<Sala> salas) {
         super(parent, "Adicionar Sessão", true);
         this.filme = filme;
+        this.salasDisponiveis = salas;
 
-        setSize(400, 250);
+        setSize(400, 300);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout());
 
-        JPanel painel = new JPanel(new GridLayout(4, 2, 10, 10));
+        JPanel painel = new JPanel(new GridLayout(5, 2, 10, 10));
         painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         painel.add(new JLabel("Data (dd/MM/yyyy):"));
@@ -39,6 +45,13 @@ public class JanelaAdicionarSessao extends JDialog {
         txtHoraFim = new JTextField();
         txtHoraFim.setEditable(false);
         painel.add(txtHoraFim);
+
+        painel.add(new JLabel("Sala:"));
+        cmbSala = new JComboBox<>();
+        for (Sala s : salasDisponiveis) {
+            if (s.isAtiva()) cmbSala.addItem(s.getNome());
+        }
+        painel.add(cmbSala);
 
         btnAdicionar = new JButton("Adicionar");
         btnCancelar = new JButton("Cancelar");
@@ -76,7 +89,7 @@ public class JanelaAdicionarSessao extends JDialog {
             int minutos = Integer.parseInt(partes[1]);
 
             int totalMinutos = horas * 60 + minutos + duracaoMinutos;
-            int fimHoras = (totalMinutos / 60)%24;
+            int fimHoras = (totalMinutos / 60) % 24;
             int fimMinutos = totalMinutos % 60;
 
             return String.format("%02d:%02d", fimHoras, fimMinutos);
@@ -89,13 +102,23 @@ public class JanelaAdicionarSessao extends JDialog {
         String data = txtData.getText().trim();
         String horaInicio = txtHoraInicio.getText().trim();
         String horaFim = txtHoraFim.getText().trim();
+        String nomeSala = (String) cmbSala.getSelectedItem();
 
-        if (data.isEmpty() || horaInicio.isEmpty() || horaFim.isEmpty()) {
+        if (data.isEmpty() || horaInicio.isEmpty() || horaFim.isEmpty() || nomeSala == null) {
             JOptionPane.showMessageDialog(this, "Preenche todos os campos.");
             return;
         }
 
-        novaSessao = new Sessao(filme, data, horaInicio, horaFim);
+        Sala salaSelecionada = salasDisponiveis.stream()
+                .filter(s -> s.getNome().equalsIgnoreCase(nomeSala))
+                .findFirst().orElse(null);
+
+        if (salaSelecionada == null) {
+            JOptionPane.showMessageDialog(this, "Sala inválida.");
+            return;
+        }
+
+        novaSessao = new Sessao(filme, salaSelecionada, data, horaInicio, horaFim);
         guardarSessaoCSV(novaSessao);
 
         JOptionPane.showMessageDialog(this, "Sessão adicionada com sucesso!");

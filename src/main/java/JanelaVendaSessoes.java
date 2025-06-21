@@ -114,10 +114,10 @@ public class JanelaVendaSessoes extends JFrame {
         for (Sessao s : sessoes) {
             if (!s.getFilme().getTitulo().equalsIgnoreCase(filme.getTitulo())) continue;
 
-            String texto = s.getHoraInicio() + " → " + s.getHoraFim();
+            String texto = s.getHoraInicio() + " → " + s.getHoraFim() + " | Sala: " + s.getSala().getNome();
             JButton btn = new JButton(texto);
             btn.setBackground(new Color(204, 255, 204));
-            btn.setPreferredSize(new Dimension(120, 30));
+            btn.setPreferredSize(new Dimension(180, 30));
 
             btn.addActionListener(e -> {
                 for (Component c : painelSessoes.getComponents()) {
@@ -136,20 +136,49 @@ public class JanelaVendaSessoes extends JFrame {
         painelSessoes.repaint();
     }
 
-
-
-    public static List<Sessao> carregarSessoesCSV(List<Filme> filmes) {
+    // 🔄 NOVA versão: carregar sessões COM salas
+    public static List<Sessao> carregarSessoesCSV(List<Filme> filmes, List<Sala> salas) {
         List<Sessao> lista = new ArrayList<>();
         File ficheiro = new File("src/main/java/csv/sessoes.csv");
 
         try (BufferedReader br = new BufferedReader(new FileReader(ficheiro))) {
             String linha;
             while ((linha = br.readLine()) != null) {
-                Sessao s = Sessao.fromCSV(linha, filmes);
+                Sessao s = Sessao.fromCSV(linha, filmes, salas);
                 if (s != null) lista.add(s);
             }
         } catch (IOException e) {
             System.err.println("Erro ao ler sessões: " + e.getMessage());
+        }
+
+        return lista;
+    }
+
+    // Opcional: carregar salas, caso precises fora da main
+    public static List<Sala> carregarSalasCSV() {
+        List<Sala> lista = new ArrayList<>();
+        File ficheiro = new File("src/main/java/csv/salas.csv");
+
+        if (!ficheiro.exists()) return lista;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(ficheiro))) {
+            String linha;
+            while ((linha = br.readLine()) != null) {
+                String[] partes = linha.split(",");
+                if (partes.length >= 7) {
+                    String nome = partes[0];
+                    String tipo = partes[1];
+                    String layout = partes[2].split("x")[0];
+                    String som = partes[3];
+                    boolean acessivel = partes[4].equals("1");
+                    boolean ativa = partes[5].equals("1");
+                    double preco = Double.parseDouble(partes[6]);
+
+                    lista.add(new Sala(nome, tipo, layout, som, acessivel, ativa, preco));
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Erro ao ler salas: " + e.getMessage());
         }
 
         return lista;
