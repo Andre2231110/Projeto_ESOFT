@@ -1,4 +1,3 @@
-// (as importações ficam iguais)
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
@@ -150,9 +149,10 @@ public class JanelaBar extends JFrame {
     }
 
     private void atualizarDetalhes(Produto p) {
+        double precoFinal = p.getPreco() * (1 - p.getDesconto() / 100.0);
         detalhesProduto.setText("Nome: " + p.getNome() +
                 "\nCategoria: " + p.getCategoria() +
-                "\nPreço: " + p.getPreco() + " €" +
+                "\nPreço com Desconto: " + String.format("%.2f", precoFinal) + " €" +
                 "\nDesconto: " + p.getDesconto() + "%");
     }
 
