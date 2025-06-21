@@ -76,4 +76,27 @@ public class Sala {
     public void setPrecoCusto(double precoCusto) {
         this.precoCusto = precoCusto;
     }
+
+    public int getNumeroLugares() {
+        try {
+            String[] partes = layout.toLowerCase().split("x");
+            int linhas = Integer.parseInt(partes[0].trim());
+            int colunas = Integer.parseInt(partes[1].trim());
+            return linhas * colunas;
+        } catch (Exception e) {
+            return 25;
+        }
+    }
+
+    public int[] getLinhasEColunas() {
+        try {
+            String[] partes = layout.toLowerCase().split("x");
+            int linhas = Integer.parseInt(partes[0].trim());
+            int colunas = Integer.parseInt(partes[1].trim());
+            return new int[]{linhas, colunas};
+        } catch (Exception e) {
+            return new int[]{5, 5};
+        }
+    }
+
 }

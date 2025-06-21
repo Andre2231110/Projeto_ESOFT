@@ -54,11 +54,11 @@ public class Sessao {
     }
 
     public String toCSV() {
-        return filme.getTitulo() + ";" + sala.getNome() + ";" + data + ";" + horaInicio + ";" + horaFim;
+        return filme.getTitulo() + "," + sala.getNome() + "," + data + "," + horaInicio + "," + horaFim;
     }
 
     public static Sessao fromCSV(String linha, java.util.List<Filme> filmes, java.util.List<Sala> salas) {
-        String[] partes = linha.split(";");
+        String[] partes = linha.split(",");
         if (partes.length != 5) return null;
 
         String titulo = partes[0];

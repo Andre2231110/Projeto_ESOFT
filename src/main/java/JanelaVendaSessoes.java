@@ -95,9 +95,23 @@ public class JanelaVendaSessoes extends JFrame {
 
     private void gerarMapaDeLugares() {
         painelLugares.removeAll();
-        painelLugares.setLayout(new GridLayout(5, 5, 5, 5));
+        botoesLugares.clear();
 
-        for (int i = 1; i <= 25; i++) {
+        if (sessaoSelecionada == null || sessaoSelecionada.getSala() == null) {
+            painelLugares.revalidate();
+            painelLugares.repaint();
+            return;
+        }
+
+        Sala sala = sessaoSelecionada.getSala();
+        int[] dimensoes = sala.getLinhasEColunas();
+        int linhas = dimensoes[0];
+        int colunas = dimensoes[1];
+        int total = linhas * colunas;
+
+        painelLugares.setLayout(new GridLayout(linhas, colunas, 5, 5));
+
+        for (int i = 1; i <= total; i++) {
             JToggleButton lugar = new JToggleButton(String.valueOf(i));
             lugar.setBackground(Color.LIGHT_GRAY);
             botoesLugares.add(lugar);
@@ -107,6 +121,7 @@ public class JanelaVendaSessoes extends JFrame {
         painelLugares.revalidate();
         painelLugares.repaint();
     }
+
 
     private void configurarBotoesSessoesDinamico() {
         painelSessoes.removeAll();
@@ -127,7 +142,9 @@ public class JanelaVendaSessoes extends JFrame {
                 }
                 btn.setBackground(Color.GREEN);
                 sessaoSelecionada = s;
+                gerarMapaDeLugares();
             });
+
 
             painelSessoes.add(btn);
         }
@@ -136,7 +153,6 @@ public class JanelaVendaSessoes extends JFrame {
         painelSessoes.repaint();
     }
 
-    // 🔄 NOVA versão: carregar sessões COM salas
     public static List<Sessao> carregarSessoesCSV(List<Filme> filmes, List<Sala> salas) {
         List<Sessao> lista = new ArrayList<>();
         File ficheiro = new File("src/main/java/csv/sessoes.csv");
@@ -154,7 +170,6 @@ public class JanelaVendaSessoes extends JFrame {
         return lista;
     }
 
-    // Opcional: carregar salas, caso precises fora da main
     public static List<Sala> carregarSalasCSV() {
         List<Sala> lista = new ArrayList<>();
         File ficheiro = new File("src/main/java/csv/salas.csv");
@@ -168,7 +183,7 @@ public class JanelaVendaSessoes extends JFrame {
                 if (partes.length >= 7) {
                     String nome = partes[0];
                     String tipo = partes[1];
-                    String layout = partes[2].split("x")[0];
+                    String layout = partes[2].trim();
                     String som = partes[3];
                     boolean acessivel = partes[4].equals("1");
                     boolean ativa = partes[5].equals("1");

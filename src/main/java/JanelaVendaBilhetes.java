@@ -65,10 +65,12 @@ public class JanelaVendaBilhetes extends JFrame {
             JButton btnSelecionar = new JButton("Selecionar");
 
             btnSelecionar.addActionListener(e -> {
-                List<Sessao> sessoes = JanelaVendaSessoes.carregarSessoesCSV(filmes);
+                List<Sala> salas = JanelaVendaSessoes.carregarSalasCSV();
+                List<Sessao> sessoes = JanelaVendaSessoes.carregarSessoesCSV(filmes, salas);
                 new JanelaVendaSessoes(f, nomeUser, sessoes);
                 dispose();
             });
+
 
             card.add(lblImagem, BorderLayout.CENTER);
             card.add(lblTitulo, BorderLayout.NORTH);
