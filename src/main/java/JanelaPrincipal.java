@@ -60,7 +60,10 @@ public class JanelaPrincipal extends JFrame {
             dispose();
         });
 
-         btnConsultas.addActionListener(e -> JOptionPane.showMessageDialog(this, "Ainda por implementar"));
+        btnConsultas.addActionListener(e ->{
+            new JanelaConsultas();
+
+        });
 
         setVisible(true);
     }
